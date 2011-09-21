@@ -3,5 +3,17 @@
     %title Product Advertising API用リバースプロキシ
     %meta{:"http-equiv"=>"Content-Type", :content=>"text/html", :charset=>"utf-8"}
   %body
+    .header
+      -if current_user
+        = "welcome #{current_user.name}"
+        %a{href: '/profile'} 設定
+        %a{href: '/logout'} ログアウト
+      -else
+        %a{href: '/auth/twitter'} Twitterでログイン
+
+    %h1
+      %a{href: '/'} Product Advertising API用リバースプロキシ
     != yield
 
+    .footer
+      powerd by machu

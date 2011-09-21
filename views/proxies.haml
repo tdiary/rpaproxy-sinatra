@@ -1,0 +1,15 @@
+%h2 登録プロキシ一覧
+
+%table
+  %tr
+    %th プロキシ名
+    %th 提供者
+    %th 対応locale
+    %th 要求
+    %th 成功
+    %th 失敗
+    %th 備考
+  -for proxy in @proxies
+    %tr
+      %td= proxy.endpoint
+      %td= proxy.user.name if proxy.user

@@ -60,8 +60,17 @@ configure do
 	# Proxy.create(endpoint: "http://www.machu.jp/amazon_proxy", name: "machu", locales: ["jp", "en"])
 end
 
+before '/proxy*' do
+	redirect '/' unless current_user
+end
+
 get '/login' do
 	"<a href='/auth/twitter'>Sign in with Twitter</a>"
+end
+
+get '/logout' do
+	session[:user_id] = nil
+	redirect '/'
 end
 
 # トップページ
@@ -89,6 +98,8 @@ end
 
 # プロキシ一覧
 get '/proxies' do
+	@proxies = Proxy.all
+	haml :proxies
 end
 
 post '/proxy' do
@@ -118,7 +129,7 @@ get '/auth/:name/callback' do
 	auth = request.env['omniauth.auth']
 	@current_user = User.find_or_create_with_omniauth(auth)
 	session[:user_id] = @current_user.uid
-	"hello #{current_user.name}"
+	redirect '/profile'
 end
 
 # リバースプロキシ http://rpaproxy.heroku.org/rpaproxy/jp/
