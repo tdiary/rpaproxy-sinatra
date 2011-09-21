@@ -1,2 +1,2 @@
-require './hello'
+require './rpaproxy'
 run Sinatra::Application
