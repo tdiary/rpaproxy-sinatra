@@ -136,3 +136,8 @@ end
 get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 	locale
 end
+
+get '/debug' do
+	raise StandardError.new
+end
+
