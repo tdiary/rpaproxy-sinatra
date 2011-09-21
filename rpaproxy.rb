@@ -2,6 +2,8 @@ require 'sinatra'
 require 'mongoid'
 require 'omniauth'
 require 'haml'
+require 'yaml'
+require 'open-uri'
 
 class Proxy
 	include Mongoid::Document
@@ -11,6 +13,21 @@ class Proxy
 	field :success, type: Integer, default: 0
 	field :failure, type: Integer, default: 0
 	referenced_in :user
+
+	before_save :parse_yaml
+
+	def parse_yaml
+		uri = URI.parse(endpoint + 'rpaproxy.yaml')
+		raise StandardError.new("Illigal URL format: #{endpoint}") if uri.scheme != 'http'
+		yaml = YAML.load(uri.read)
+		['name', 'locales'].each do |key|
+			raise StandardError.new("Cannot read #{key} from #{uri}") unless yaml[key]
+		end
+		# TODO: localesの国別チェック＆空localesチェック
+		# TODO: リクエスト送信チェック（プロキシの仕様に準拠しているかテスト）
+		self.name = yaml['name']
+		self.locales = yaml['locales']
+	end
 end
 
 class User
@@ -134,6 +151,7 @@ end
 
 # リバースプロキシ http://rpaproxy.heroku.org/rpaproxy/jp/
 get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
+	# TODO: ランダムに取得
 	locale
 end
 
