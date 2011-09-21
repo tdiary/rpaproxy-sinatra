@@ -3,6 +3,7 @@ require 'mongoid'
 require 'omniauth'
 require 'haml'
 require 'yaml'
+require 'net/http'
 require 'open-uri'
 
 class Proxy
@@ -152,7 +153,26 @@ end
 # リバースプロキシ http://rpaproxy.heroku.org/rpaproxy/jp/
 get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 	# TODO: ランダムに取得
-	locale
+	proxies = Proxy.where(locales: locale).limit(5)
+	res = nil
+	proxies.each do |proxy|
+		uri = URI.parse("#{proxy.endpoint}#{locale}/")
+		res = Net::HTTP.start(uri.host, uri.port) {|http|
+			http.get(uri.path)
+		}
+		if res.kind_of? Net::HTTPFound
+			STDERR.puts "success for #{proxy.endpoint}"
+			# 成功回数を増分
+			break
+		else
+			STDERR.puts "failure for #{proxy.endpoint}"
+			# 失敗回数を増分
+		end
+	end
+	unless res.kind_of? Net::HTTPFound
+		halt 503, "proxy unavailable"
+	end
+	redirect res['location'], 302
 end
 
 get '/debug' do
