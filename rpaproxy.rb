@@ -170,10 +170,9 @@ get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 	res = nil
 	proxies.each do |proxy|
 		begin
-			# TODO: ヘッダにuser-agentを付加する
 			uri = URI.parse("#{proxy.endpoint}#{locale}/")
 			res = Net::HTTP.start(uri.host, uri.port) {|http|
-				http.get(uri.path)
+				http.get("#{uri.path}?#{request.query_string}", {'User-Agent' => 'rpaproxy/0.01'})
 			}
 			if res.kind_of? Net::HTTPFound
 				# 成功回数を増分
