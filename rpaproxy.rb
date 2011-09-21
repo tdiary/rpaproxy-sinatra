@@ -13,9 +13,13 @@ class Proxy
 	field :locales, type: Array
 	field :success, type: Integer, default: 0
 	field :failure, type: Integer, default: 0
-	referenced_in :user
+	# referenced_in :user
+	belongs_to :user
+	index :locales
 
 	before_save :parse_yaml
+	validates_presence_of :endpoint, :name, :locales
+	validates_uniqueness_of :endpoint
 
 	def parse_yaml
 		uri = URI.parse(endpoint + 'rpaproxy.yaml')
@@ -24,7 +28,7 @@ class Proxy
 		['name', 'locales'].each do |key|
 			raise StandardError.new("Cannot read #{key} from #{uri}") unless yaml[key]
 		end
-		# TODO: localesの国別チェック＆空localesチェック
+		# TODO: localesの国別チェック
 		# TODO: リクエスト送信チェック（プロキシの仕様に準拠しているかテスト）
 		self.name = yaml['name']
 		self.locales = yaml['locales']
@@ -37,7 +41,12 @@ class User
 	field :name, type: String
 	field :url, type: String
 	field :screen_name, type: String
-	references_many :proxies
+	# references_many :proxies
+	has_many :proxies
+
+	validates_presence_of :uid, :name, :screen_name
+	validates_uniqueness_of :uid
+	index :uid, unique: true
 
 	def self.find_or_create_with_omniauth(auth)
 		user = where(uid: auth['uid']).first
@@ -78,6 +87,10 @@ configure do
 	# Proxy.create(endpoint: "http://www.machu.jp/amazon_proxy", name: "machu", locales: ["jp", "en"])
 end
 
+before '/profile*' do
+	redirect '/' unless current_user
+end
+
 before '/proxy*' do
 	redirect '/' unless current_user
 end
@@ -93,24 +106,30 @@ end
 
 # トップページ
 get '/' do
-	# raise StandardError.new("debug")
 	haml :index
+end
+
+# ログイン処理
+get '/auth/:name/callback' do
+	auth = request.env['omniauth.auth']
+	@current_user = User.find_or_create_with_omniauth(auth)
+	session[:user_id] = @current_user.uid
+	redirect '/profile'
 end
 
 # ログイン後の画面
 get '/profile' do
-	redirect '/' unless current_user
 	haml :profile
 end
 
 # プロフィール更新
 put '/profile/:id' do
-	# user = User.where(uid: params[:uid]).first
 	user = User.find(params[:id])
 	raise StandardError.new("error") unless current_user.id == user.id
 	user.name = params[:name]
 	user.url = params[:url]
 	user.save
+	# TODO: 更新メッセージ
 	redirect '/profile'
 end
 
@@ -121,9 +140,8 @@ get '/proxies' do
 end
 
 post '/proxy' do
-	Proxy.create(endpoint: params[:endpoint], user: current_user)
 	# create a new proxy
-	# TODO: check rpaproxy.yaml
+	Proxy.create(endpoint: params[:endpoint], user: current_user)
 	redirect '/profile'
 end
 
@@ -143,33 +161,34 @@ delete '/proxy/:id' do
 	redirect '/profile'
 end
 
-get '/auth/:name/callback' do
-	auth = request.env['omniauth.auth']
-	@current_user = User.find_or_create_with_omniauth(auth)
-	session[:user_id] = @current_user.uid
-	redirect '/profile'
-end
-
-# リバースプロキシ http://rpaproxy.heroku.org/rpaproxy/jp/
+# リバースプロキシ http://rpaproxy.heroku.com/rpaproxy/jp/
 get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
-	# TODO: ランダムに取得
-	proxies = Proxy.where(locales: locale).limit(5)
+	# FIXME: 全件取得しているのを最適化したい
+	proxies = Proxy.where(locales: locale).asc('_id').only(:endpoint)
+	# 取得したプロキシをランダムに並べ替え
+	proxies.concat(proxies.slice!(0, rand(proxies.length)))
 	res = nil
 	proxies.each do |proxy|
-		uri = URI.parse("#{proxy.endpoint}#{locale}/")
-		res = Net::HTTP.start(uri.host, uri.port) {|http|
-			http.get(uri.path)
-		}
-		if res.kind_of? Net::HTTPFound
-			STDERR.puts "success for #{proxy.endpoint}"
-			# 成功回数を増分
-			break
-		else
-			STDERR.puts "failure for #{proxy.endpoint}"
-			# 失敗回数を増分
+		begin
+			# TODO: ヘッダにuser-agentを付加する
+			uri = URI.parse("#{proxy.endpoint}#{locale}/")
+			res = Net::HTTP.start(uri.host, uri.port) {|http|
+				http.get(uri.path)
+			}
+			if res.kind_of? Net::HTTPFound
+				# 成功回数を増分
+				proxy.inc(:success, 1)
+				break
+			end
+		rescue => e
+			STDERR.puts "Error: #{e.class}, #{e.message}"
 		end
+		STDERR.puts "failure for #{proxy.endpoint}"
+		# 失敗回数を増分
+		proxy.inc(:failure, 1)
 	end
 	unless res.kind_of? Net::HTTPFound
+		# TODO: トータルの失敗回数を増分
 		halt 503, "proxy unavailable"
 	end
 	redirect res['location'], 302
@@ -178,4 +197,3 @@ end
 get '/debug' do
 	raise StandardError.new
 end
-
