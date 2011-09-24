@@ -3,8 +3,8 @@ require 'mongoid'
 require 'omniauth'
 require 'haml'
 
-require 'models/user.rb'
-require 'models/proxy.rb'
+require './models/user.rb'
+require './models/proxy.rb'
 
 helpers do
 	def current_user
