@@ -1,5 +1,4 @@
-require '../rpaproxy'
-require 'rspec'
+require './rpaproxy'
 require 'rack/test'
 
 set :environment, :test
