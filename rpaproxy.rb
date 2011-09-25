@@ -37,7 +37,6 @@ configure :development, :production do
 		conn = Mongo::Connection.from_uri(ENV['MONGOHQ_URL'])
 		config.master = conn.db(uri.path.gsub(/^\//, ''))
 	end
-	# Proxy.create(endpoint: "http://www.machu.jp/amazon_proxy", name: "machu", locales: ["jp", "en"])
 end
 
 configure :production do
@@ -115,10 +114,14 @@ end
 post '/proxy' do
 	# create a new proxy
 	proxy = Proxy.new(endpoint: params[:endpoint], user: current_user)
-	if proxy.save
-		flash[:notice] = "プロキシを追加しました"
-	else
-		flash[:error] = "プロキシの追加に失敗しました。#{proxy.errors.full_messages}"
+	begin
+		if proxy.save
+			flash[:notice] = "プロキシを追加しました"
+		else
+			flash[:error] = "プロキシの追加に失敗しました。#{proxy.errors.full_messages}"
+		end
+	rescue StandardError => e
+		flash[:error] = "プロキシの追加に失敗しました。 #{e.class}: #{e.message}"
 	end
 	redirect '/profile'
 end
@@ -129,10 +132,14 @@ put '/proxy/:id' do
 	raise StandardError.new("error") unless current_user.id == proxy.user.id
 	proxy.name = params[:name]
 	proxy.endpoint = params[:endpoint]
-	if proxy.save
-		flash[:notice] = "プロキシ情報を更新しました"
-	else
-		flash[:error] = "プロキシ情報の更新に失敗しました。#{proxy.errors.full_messages}"
+	begin
+		if proxy.save
+			flash[:notice] = "プロキシ情報を更新しました"
+		else
+			flash[:error] = "プロキシ情報の更新に失敗しました。#{proxy.errors.full_messages}"
+		end
+	rescue StandardError => e
+		flash[:error] = "プロキシ情報の更新に失敗しました。 #{e.class}: #{e.message}"
 	end
 	redirect '/profile'
 end
@@ -171,5 +178,5 @@ get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 end
 
 get '/debug' do
-	raise StandardError.new
+	raise StandardError.new('デバッグ')
 end
