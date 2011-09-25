@@ -127,6 +127,7 @@ put '/proxy/:id' do
 	# update an existing proxy
 	proxy = Proxy.find(params[:id])
 	raise StandardError.new("error") unless current_user.id == proxy.user.id
+	proxy.name = params[:name]
 	proxy.endpoint = params[:endpoint]
 	if proxy.save
 		flash[:notice] = "プロキシ情報を更新しました"
@@ -162,7 +163,7 @@ get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 			proxy.inc(:failure, 1)
 		end
 	end
-	unless res
+	unless res.kind_of? Net::HTTPFound
 		# TODO: トータルの失敗回数を増分
 		halt 503, "proxy unavailable"
 	end

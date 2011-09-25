@@ -25,7 +25,7 @@ class Proxy
 			http.get("#{uri.path}?#{query_string}", {'User-Agent' => 'rpaproxy/0.01'})
 		}
 		unless res.kind_of? Net::HTTPFound
-			StandardError.new("unexcepted response: #{res.code}")
+			raise StandardError.new("unexcepted response: #{res.code}")
 		end
 		res
 	end

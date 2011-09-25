@@ -81,6 +81,41 @@ pre {
 	word-wrap: break-word;
 }
 
+form {
+	border: solid 1px #aaa;
+	background: #f6f6f6;
+	margin: 0.5em;
+	padding: 0.5em;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+}
+
+form .form-item {
+	margin-bottom: 0.5em;
+}
+
+form label {
+	display: block;
+}
+
+form.endpoint label {
+	display: inline;
+}
+
+form input.form-text {
+	border: 1px solid #CCC;
+	padding: 0.5em;
+	width: 95%;
+	margin-left: 1em;
+}
+
+.description {
+	color: #666;
+	font-size: small;
+	margin-left: 1em;
+}
+
 .endpoint {
 	border: solid 1px #15aecb;
 	background-color: #ecfef5;
@@ -92,4 +127,29 @@ pre {
 	border-radius: 10px;
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
+}
+
+table {
+	border: solid 1px #999;
+	font-size: small;
+}
+
+th {
+	background-color: #fff;
+	padding: 0.5em 1em;
+	text-align: left;
+	border-bottom: solid 1px #999;
+}
+
+tr:nth-child(odd) {
+	background: #f0f0f0;
+}
+
+td {
+	padding: 0.5em 1em;
+}
+
+
+td.number {
+	text-align: right;
 }

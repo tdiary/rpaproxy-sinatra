@@ -1,41 +1,57 @@
 %h2
   %a{href: "http://twitter.com/#{current_user.screen_name}"}= "@#{current_user.screen_name}"
   さんの設定
+
 %h3 プロフィール
 %form{action: "/profile/#{current_user.id}", method: 'post'}
   %input{type: 'hidden', name: '_method', value: 'put'}
-  名前: 
-  %input{name: 'name', value: current_user.name, size: 40}
-  URL:
-  %input{name: 'url', value: current_user.url, size: 120}
-  %input{type: 'submit'}
+  .form-item
+    %label{for: 'user.name'} 名前: 
+    %input.form-text{id: 'user.name', name: 'name', value: current_user.name}
+    .description テスト
+  .form-item
+    %label{for: 'user.url'} URL: 
+    %input.form-text{id: 'user.url', type: 'url', name: 'url', value: current_user.url}
+    .description テスト
+  %input{type: 'submit', value: 'プロフィール更新'}
 
-%h3 プロキシ
-%p 負荷の関係上、Amazon APIコール結果ではなく、認証Signature付きURLを302 Foundで返すようにお願いします。
-%p リバース・プロキシからのHTTPリクエストヘッダのUser-Agentには、"rpaproxy/x.xx"(x.xxはバージョン)が含まれますので（例：rpaproxy/0.01 AppEngine-Google; (+http://code.google.com/appengine),gzip(gfe)）判別が必要な場合にお使い下さい。
+%h3 プロキシ登録
 
-%h4 新規
-エンドポイント:
 %form{action: '/proxy', method: 'post'}
-  %input{name: 'endpoint', size: 120}
-  %input{type: 'submit'}
+  .form-item
+    %label{for: 'proxy.endpoint'} エンドポイント:
+    %input.form-text{id: 'proxy.endpoint', type: 'url', name: 'endpoint'}
+    .description
+      %ul
+        %li
+          エンドポイント直下に
+          %a{href: "/"}遠隔設定ファイル(rpaproxy.yaml)
+          を設置し、公開して下さい（
+          %a{href: "/"}例
+          ）。
+        %li 負荷の関係上、Amazon APIコール結果ではなく、認証Signature付きURLを302 Foundで返すようにお願いします。
+        %li リバース・プロキシからのHTTPリクエストヘッダのUser-Agentには、"rpaproxy/x.xx"(x.xxはバージョン)が含まれますので（例：rpaproxy/0.01 AppEngine-Google; (+http://code.google.com/appengine),gzip(gfe)）判別が必要な場合にお使い下さい。
+  %input{type: 'submit', value: 'プロキシ追加'}
 
-%p 
-  ※エンドポイント直下に
-  %a{href: "/"}遠隔設定ファイル(rpaproxy.yaml)
-  を設置し、公開して下さい（
-  %a{href: "/"}例
-  ）。
-
-%h4 既存
+%h3 登録済みプロキシ
 
 - for proxy in current_user.proxies
   %form{action: "/proxy/#{proxy.id}", method: 'post'}
     %input{type: 'hidden', name: '_method', value: 'put'}
-    %input{name: 'endpoint', value: proxy.endpoint, size: 120}
-    %input{type: 'submit'}
+    .form-item
+      %label{for: "proxy_#{proxy.id}.name"} 名前:
+      %input.form-text{id: "proxy_#{proxy.id}.name", name: 'name', value: proxy.name}
+      .description test
+    .form-item
+      %label{for: "proxy_#{proxy.id}.endpoint"} エンドポイント:
+      %input.form-text{id: "proxy_#{proxy.id}.endpoint", type: 'url', name: 'endpoint', value: proxy.endpoint}
+      .description test
+    .form-item
+      ステータス
+      .description= "成功: #{proxy.success}回, 失敗: #{proxy.failure}回"
+    %input{type: 'submit', value: 'プロキシ情報更新'}
 
   %form{action: "/proxy/#{proxy.id}", method: 'post'}
     %input{type: 'hidden', name: '_method', value: 'delete'}
-    %input{type: 'submit'}
+    %input{type: 'submit', value: 'プロキシ情報削除'}
 

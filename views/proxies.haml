@@ -1,15 +1,37 @@
 %h2 登録プロキシ一覧
-
-%table
-  %tr
-    %th プロキシ名
-    %th 提供者
-    %th 対応locale
-    %th 要求
-    %th 成功
-    %th 失敗
-    %th 備考
-  -for proxy in @proxies
+%table{cellpadding: '0', cellspacing: '0'}
+  %tbody
     %tr
-      %td= proxy.endpoint
-      %td= proxy.user.name if proxy.user
+      %th プロキシ名
+      %th 提供者
+      %th jp
+      %th us
+      %th ca
+      %th de
+      %th fr
+      %th uk
+      %th 要求
+      %th 成功
+      %th 失敗
+      %th 備考
+    -for proxy in @proxies
+      %tr
+        %td= proxy.name
+        -if proxy.user
+          -if proxy.user.url
+            %td
+              %a{href: proxy.user.url}= proxy.user.name
+          -else
+            %td= proxy.user.name
+        -else
+          %td
+        -for locale in ['jp', 'us', 'ca', 'de', 'fr', 'uk']
+          -if proxy.locales.include?(locale)
+            %td ○
+          -else
+            %td −
+        %td.number= proxy.success + proxy.failure
+        %td.number= proxy.success
+        %td.number= proxy.failure
+        %td
+
