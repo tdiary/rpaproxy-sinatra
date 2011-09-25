@@ -10,7 +10,11 @@
       #header
         -if current_user
           = "welcome #{current_user.name}"
-          %a{href: '/'} トップページ
+
+        %a{href: '/'} トップページ
+        %a{href: '/proxies'} プロキシ一覧
+
+        -if current_user
           %a{href: '/profile'} 設定
           %a{href: '/logout'} ログアウト
         -else

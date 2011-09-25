@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+#
 require 'mongoid'
 require 'yaml'
 require 'net/http'
@@ -13,7 +15,7 @@ class Proxy
 	belongs_to :user
 	index :locales
 
-	before_save :parse_yaml
+	before_validation :parse_yaml
 	validates_presence_of :endpoint, :name, :locales
 	validates_uniqueness_of :endpoint
 
@@ -31,13 +33,16 @@ class Proxy
 	def parse_yaml
 		uri = URI.parse(endpoint + 'rpaproxy.yaml')
 		raise StandardError.new("Illigal URL format: #{endpoint}") if uri.scheme != 'http'
-		yaml = YAML.load(uri.read)
+		res = Net::HTTP.start(uri.host, uri.port) {|http|
+			http.get(uri.path, {'User-Agent' => 'rpaproxy/0.01'})
+		}
+		yaml = YAML.load(res.body)
 		['name', 'locales'].each do |key|
 			raise StandardError.new("Cannot read #{key} from #{uri}") unless yaml[key]
 		end
-		# TODO: locales¤Î¹ñÊÌ¥Á¥§¥Ã¥¯
-		# TODO: ¥ê¥¯¥¨¥¹¥ÈÁ÷¿®¥Á¥§¥Ã¥¯¡Ê¥×¥í¥­¥·¤Î»ÅÍÍ¤Ë½àµò¤·¤Æ¤¤¤ë¤«¥Æ¥¹¥È¡Ë
-		self.name = yaml['name']
+		# TODO: localesã®å›½åˆ¥ãƒã‚§ãƒƒã‚¯
+		# TODO: ãƒªã‚¯ã‚¨ã‚¹ãƒˆé€ä¿¡ãƒã‚§ãƒƒã‚¯ï¼ˆãƒ—ãƒ­ã‚­ã‚·ã®ä»•æ§˜ã«æº–æ‹ ã—ã¦ã„ã‚‹ã‹ãƒ†ã‚¹ãƒˆï¼‰
+		self.name ||= yaml['name']
 		self.locales = yaml['locales']
 	end
 end

@@ -14,7 +14,7 @@ require './models/proxy.rb'
 use Rack::Flash
 
 # TODO: use secure session
-enable :sessions, :logging
+enable :sessions
 #use Rack::Session::Cookie
 
 use OmniAuth::Builder do
@@ -73,6 +73,8 @@ end
 
 # トップページ
 get '/' do
+	# TODO: プロキシを提供していないユーザは表示しない
+	@users = User.all
 	haml :index
 end
 

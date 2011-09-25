@@ -32,9 +32,22 @@
   %li 負荷の関係上、Amazon APIコール結果ではなく、認証Signature付きURLを302 Foundで返すようにお願いします。
   %li リバース・プロキシからのHTTPリクエストヘッダのUser-Agentには、"rpaproxy/x.xx"(x.xxはバージョン)が含まれますので（例：rpaproxy/0.01 AppEngine-Google; (+http://code.google.com/appengine),gzip(gfe)）判別が必要な場合にお使い下さい。
 
-%h2 プロキシ登録にはTwitterによるログインが必要です
-%a{href: '/auth/twitter'}
-  %img{src: 'sign-in-with-twitter-l.png', alt: 'Twitterでログイン'}
+-unless current_user
+  %h2 プロキシ登録
 
-%h2 提供者一覧
+  %p プロキシ登録にはTwitterによるログインが必要です
+  %a{href: '/auth/twitter'}
+    %img{src: 'sign-in-with-twitter-l.png', alt: 'Twitterでログイン'}
+
+%h2 提供者一覧 (敬称略)
+
+.owners
+  %ul
+    -for user in @users
+      %li
+        -if user.url
+          %a{href: user.url}= user.name
+        -else
+          = user.name
+
 %a{href: '/proxies'} 登録プロキシ一覧
