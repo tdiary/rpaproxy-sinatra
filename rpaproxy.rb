@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+#
+require 'rack-flash'
 require 'sinatra'
 require 'mongoid'
 require 'omniauth'
@@ -6,18 +9,18 @@ require 'haml'
 require './models/user.rb'
 require './models/proxy.rb'
 
-helpers do
-	def current_user
-		@current_user ||= User.where(uid: session[:user_id]).first if session[:user_id]
-	end
-end
+# Encoding::default_external = 'UTF-8'
+
+use Rack::Flash
 
 # TODO: use secure session
 enable :sessions, :logging
 #use Rack::Session::Cookie
+
 use OmniAuth::Builder do
 	provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
 end
+
 set :haml, { format: :html5, escape_html: true }
 
 # TODO: DB接続設定を外部ファイルへ移動する
@@ -39,6 +42,16 @@ end
 
 configure :production do
 	# require 'newrelic_rpm'
+end
+
+helpers do
+	def current_user
+		@current_user ||= User.where(uid: session[:user_id]).first if session[:user_id]
+	end
+end
+
+before do
+	content_type :html, 'charset' => 'utf-8'
 end
 
 before '/profile*' do
@@ -68,6 +81,7 @@ get '/auth/:name/callback' do
 	auth = request.env['omniauth.auth']
 	@current_user = User.find_or_create_with_omniauth(auth)
 	session[:user_id] = @current_user.uid
+	flash[:notice] = "ログインしました"
 	redirect '/profile'
 end
 
@@ -82,8 +96,11 @@ put '/profile/:id' do
 	raise StandardError.new("error") unless current_user.id == user.id
 	user.name = params[:name]
 	user.url = params[:url]
-	user.save
-	# TODO: 更新メッセージ
+	if user.save
+		flash[:notice] = "プロフィールを更新しました"
+	else
+		flash[:error] = "プロフィールを更新できませんでした。#{user.errors.full_messages}"
+	end
 	redirect '/profile'
 end
 
@@ -95,7 +112,12 @@ end
 
 post '/proxy' do
 	# create a new proxy
-	Proxy.create(endpoint: params[:endpoint], user: current_user)
+	proxy = Proxy.new(endpoint: params[:endpoint], user: current_user)
+	if proxy.save
+		flash[:notice] = "プロキシを追加しました"
+	else
+		flash[:error] = "プロキシの追加に失敗しました。#{proxy.errors.full_messages}"
+	end
 	redirect '/profile'
 end
 
@@ -104,7 +126,11 @@ put '/proxy/:id' do
 	proxy = Proxy.find(params[:id])
 	raise StandardError.new("error") unless current_user.id == proxy.user.id
 	proxy.endpoint = params[:endpoint]
-	proxy.save
+	if proxy.save
+		flash[:notice] = "プロキシ情報を更新しました"
+	else
+		flash[:error] = "プロキシ情報の更新に失敗しました。#{proxy.errors.full_messages}"
+	end
 	redirect '/profile'
 end
 
@@ -112,6 +138,7 @@ delete '/proxy/:id' do
 	proxy = Proxy.find(params[:id])
 	raise StandardError.new("error") unless current_user.id == proxy.user.id
 	proxy.destroy
+	flash[:notice] = "プロキシ情報を削除しました"
 	redirect '/profile'
 end
 
@@ -124,7 +151,7 @@ get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 	res = nil
 	proxies.each do |proxy|
 		begin
-			res = proxy.feach(locale, query_string)
+			res = proxy.fetch(locale, request.query_string)
 			proxy.inc(:success, 1)
 			break
 		rescue => e

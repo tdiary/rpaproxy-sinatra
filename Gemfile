@@ -4,6 +4,7 @@ gem "mongoid", "~> 2.2"
 gem "bson_ext", "~> 1.3"
 gem "omniauth"
 gem "haml"
+gem "rack-flash"
 
 gem "rake"
 

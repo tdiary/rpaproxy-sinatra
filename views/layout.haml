@@ -2,46 +2,34 @@
   %head
     %title Product Advertising API用リバースプロキシ
     %meta{:"http-equiv"=>"Content-Type", :content=>"text/html", :charset=>"utf-8"}
+    %link{"rel" => "stylesheet", "href" => "rpaproxy.css", "type" => "text/css", "media" => "all"}
     %script{src: 'http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'}
     %script{src: 'rpaproxy.js'}
   %body
-    .header
-      -if current_user
-        = "welcome #{current_user.name}"
-        %a{href: '/profile'} 設定
-        %a{href: '/logout'} ログアウト
-      -else
-        %a{href: '/auth/twitter'} Twitterでログイン
+    #header-outer
+      #header
+        -if current_user
+          = "welcome #{current_user.name}"
+          %a{href: '/'} トップページ
+          %a{href: '/profile'} 設定
+          %a{href: '/logout'} ログアウト
+        -else
+          %a{href: '/auth/twitter'}
+            %img{src: 'sign-in-with-twitter-l.png', alt: 'Twitterでログイン'}
 
-    %h1
-      %a{href: '/'} Product Advertising API用リバースプロキシ
-
-    .endpoint
-      %p
-        エンドポイント:
-        %input#endpoint{size: 120}
-      %p
-        Location:
-        %label{for: 'jp'}
-          %input#jp{type: 'radio', name: 'locale', value: 'jp', checked: 'true'}
-          jp
-        %label{for: 'us'}
-          %input#us{type: 'radio', name: 'locale', value: 'us'}
-          us
-        %label{for: 'ca'}
-          %input#ca{type: 'radio', name: 'locale', value: 'ca'}
-          ca
-        %label{for: 'de'}
-          %input#de{type: 'radio', name: 'locale', value: 'de'}
-          de
-        %label{for: 'fr'}
-          %input#fr{type: 'radio', name: 'locale', value: 'fr'}
-          fr
-        %label{for: 'uk'}
-          %input#uk{type: 'radio', name: 'locale', value: 'uk'}
-          uk
-
-    != yield
-
-    .footer
-      powerd by machu
+    #content-outer
+  
+      %h1
+        Product Advertising API用リバースプロキシ
+    
+      -if flash.has?(:error)
+        .error=flash[:error]
+  
+      -if flash.has?(:notice)
+        .notice=flash[:notice]
+  
+      != yield
+  
+    #footer-outer
+      #footer
+        powerd by machu
