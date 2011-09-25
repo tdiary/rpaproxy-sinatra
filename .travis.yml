@@ -1,5 +1,1 @@
 rvm: 1.9.2
-env:
-  - TWITTER_KEY=your_twitter_key
-  - TWITTER_SECRET=your_twitter_secret
-  - MONGOHQ_URL=mongo_hq_url

@@ -20,7 +20,12 @@ use OmniAuth::Builder do
 end
 set :haml, { format: :html5, escape_html: true }
 
-configure do
+# TODO: DB接続設定を外部ファイルへ移動する
+configure :test do
+	Mongo::Connection.new('localhost').db('myapp')
+end
+
+configure :development, :production do
 	raise StandardError.new("not found ENV['TWITTER_KEY']") unless ENV['TWITTER_KEY']
 	raise StandardError.new("not found ENV['TWITTER_SECRET']") unless ENV['TWITTER_SECRET']
 	Mongoid.configure do |config|
