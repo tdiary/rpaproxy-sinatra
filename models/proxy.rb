@@ -43,7 +43,6 @@ class Proxy
 			raise StandardError.new("Cannot read #{key} from #{uri}") unless yaml[key]
 		end
 		# TODO: localesの国別チェック
-		# TODO: リクエスト送信チェック（プロキシの仕様に準拠しているかテスト）
 		self.name ||= yaml['name']
 		self.locales = yaml['locales']
 	end

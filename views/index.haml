@@ -13,6 +13,12 @@
 
 %p Amazon Web ServicesのProduct Advertising API用の認証処理を代行するプロキシ(amazon-auth-proxy仕様準拠)の負荷分散を行うリバース・プロキシです。
 %p 上記のエンドポイント宛にProduct Advertising API（旧：Amazon アソシエイト Web サービス）のRESTエンドポイント用クエリを付けて送信すると、登録されているプロキシの中からラウンドロビンに選択して要求を中継し、応答を返します。
+%p
+  オリジナルは、
+  %a{href: 'http://d.hatena.ne.jp/furyu-tei/'} id:furyu-tei
+  さんの
+  %a{href: 'http://honnomemo.appspot.com/rpaproxy/'} http://honnomemo.appspot.com/rpaproxy/
+  です。
 
 %h3 リクエスト例
 %pre http://rpaproxy.heroku.com/rpaproxy/jp/?Service=AWSECommerceService&AssociateTag=sample-22&SubscriptionId=12345678901234567890&Version=2007-10-29&Operation=ItemSearch&ResponseGroup=Small&SearchIndex=Books&Keywords=Amazon&ItemPage=1
@@ -23,14 +29,13 @@
 %h3 利用者の方へ
 %ul
   %li 過度に頻繁なアクセスが確認された場合など、運用者の判断で予告無く利用を制限するなどの措置をとる可能性があります。
-  %li また、運用者の都合により、予告無くサービスを停止することもありますので、ご了承願います（全体でGoogle App EngineのFree Default Quotaを越えた場合、他）。
+  %li また、運用者の都合により、予告無くサービスを停止することもありますので、ご了承願います。
   %li AmazonのAccess Key IDをお持ちの方は、自前でプロキシを設置の上、本リバース・プロキシへの登録をお願いします。
-  %li Google App Engineならば無料でプロキシを設置可能です(こちらを参照)。
 
 %h3 プロキシ提供者の方へ
 %ul
   %li 負荷の関係上、Amazon APIコール結果ではなく、認証Signature付きURLを302 Foundで返すようにお願いします。
-  %li リバース・プロキシからのHTTPリクエストヘッダのUser-Agentには、"rpaproxy/x.xx"(x.xxはバージョン)が含まれますので（例：rpaproxy/0.01 AppEngine-Google; (+http://code.google.com/appengine),gzip(gfe)）判別が必要な場合にお使い下さい。
+  %li リバース・プロキシからのHTTPリクエストヘッダのUser-Agentには、"rpaproxy/x.xx"(x.xxはバージョン)が含まれます。
 
 -unless current_user
   %h2 プロキシ登録
@@ -39,15 +44,6 @@
   %a{href: '/auth/twitter'}
     %img{src: 'sign-in-with-twitter-l.png', alt: 'Twitterでログイン'}
 
-%h2 提供者一覧 (敬称略)
-
-.owners
-  %ul
-    -for user in @users
-      %li
-        -if user.url
-          %a{href: user.url}= user.name
-        -else
-          = user.name
+%h2 登録プロキシ一覧
 
 %a{href: '/proxies'} 登録プロキシ一覧

@@ -14,6 +14,8 @@ class User
 	validates_uniqueness_of :uid
 	index :uid, unique: true
 
+	# TODO: URIにはhttp/httpsスキームのみ登録可能とする
+
 	def self.find_or_create_with_omniauth(auth)
 		user = where(uid: auth['uid']).first
 		unless user

@@ -16,10 +16,10 @@ body {
 #header-outer {
 	text-align: right;
 	position: fixed;
-	width:100%;
-	top:0;
-	height:40px;
-	z-index:999;
+	width: 100%;
+	top: 0;
+	height: 40px;
+	z-index: 999;
 	-moz-box-shadow:0 1px 3px rgba(0,0,0,0.25),0 -1px 0 rgba(0,0,0,0.1) inset;
 	-webkit-box-shadow:0 1px 3px rgba(0,0,0,0.25),0 -1px 0 rgba(0,0,0,0.1) inset;
 	box-shadow:0 1px 3px rgba(0,0,0,0.25),0 -1px 0 rgba(0,0,0,0.1) inset;

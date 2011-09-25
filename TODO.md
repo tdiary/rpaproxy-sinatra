@@ -3,6 +3,7 @@
  * スタイルシート作成
  * テストを書く
    * https://github.com/intridea/omniauth/tree/master/spec
+   * proxyの仕様を満たしていることのチェック
  * <del>node.jsとの速度比較</del>
  * ヘルプを書く
  * READMEを書く

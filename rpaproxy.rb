@@ -72,8 +72,6 @@ end
 
 # トップページ
 get '/' do
-	# TODO: プロキシを提供していないユーザは表示しない
-	@users = User.all
 	haml :index
 end
 
@@ -131,7 +129,7 @@ put '/proxy/:id' do
 	proxy = Proxy.find(params[:id])
 	raise StandardError.new("error") unless current_user.id == proxy.user.id
 	proxy.name = params[:name]
-	proxy.endpoint = params[:endpoint]
+	# proxy.endpoint = params[:endpoint]
 	begin
 		if proxy.save
 			flash[:notice] = "プロキシ情報を更新しました"

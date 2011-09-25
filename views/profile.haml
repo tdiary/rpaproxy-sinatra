@@ -8,11 +8,11 @@
   .form-item
     %label{for: 'user.name'} 名前: 
     %input.form-text{id: 'user.name', name: 'name', value: current_user.name}
-    .description テスト
+    .description あなたのお名前です。プロキシ一覧のページに表示されます。
   .form-item
     %label{for: 'user.url'} URL: 
     %input.form-text{id: 'user.url', type: 'url', name: 'url', value: current_user.url}
-    .description テスト
+    .description ウェブサイトをお持ちでしたら、ここにURLを入力してください。
   %input{type: 'submit', value: 'プロフィール更新'}
 
 %h3 プロキシ登録
@@ -25,12 +25,12 @@
       %ul
         %li
           エンドポイント直下に
-          %a{href: "/"}遠隔設定ファイル(rpaproxy.yaml)
+          %a{href: "http://honnomemo.appspot.com/rpaproxy/help/config/"}遠隔設定ファイル(rpaproxy.yaml)
           を設置し、公開して下さい（
-          %a{href: "/"}例
+          %a{href: "rpaproxy.yaml"}例
           ）。
         %li 負荷の関係上、Amazon APIコール結果ではなく、認証Signature付きURLを302 Foundで返すようにお願いします。
-        %li リバース・プロキシからのHTTPリクエストヘッダのUser-Agentには、"rpaproxy/x.xx"(x.xxはバージョン)が含まれますので（例：rpaproxy/0.01 AppEngine-Google; (+http://code.google.com/appengine),gzip(gfe)）判別が必要な場合にお使い下さい。
+        %li リバース・プロキシからのHTTPリクエストヘッダのUser-Agentには、"rpaproxy/x.xx"(x.xxはバージョン)が含まれます。
   %input{type: 'submit', value: 'プロキシ追加'}
 
 %h3 登録済みプロキシ
@@ -41,17 +41,15 @@
     .form-item
       %label{for: "proxy_#{proxy.id}.name"} 名前:
       %input.form-text{id: "proxy_#{proxy.id}.name", name: 'name', value: proxy.name}
-      .description test
+      .description プロキシの名前です。プロキシ一覧のページに表示されます。
     .form-item
-      %label{for: "proxy_#{proxy.id}.endpoint"} エンドポイント:
-      %input.form-text{id: "proxy_#{proxy.id}.endpoint", type: 'url', name: 'endpoint', value: proxy.endpoint}
-      .description test
-    .form-item
-      ステータス
+      %label{for: "proxy_#{proxy.id}.endpoint"} エンドポイント（変更不可）:
+      %input.form-text{id: "proxy_#{proxy.id}.endpoint", type: 'url', name: 'endpoint', value: proxy.endpoint, readonly: true}
       .description= "成功: #{proxy.success}回, 失敗: #{proxy.failure}回"
     %input{type: 'submit', value: 'プロキシ情報更新'}
 
   %form{action: "/proxy/#{proxy.id}", method: 'post'}
+    .description プロキシ情報を削除する場合は、下のボタンをクリックしてください。
     %input{type: 'hidden', name: '_method', value: 'delete'}
     %input{type: 'submit', value: 'プロキシ情報削除'}
 

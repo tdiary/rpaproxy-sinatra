@@ -1,0 +1,11 @@
+# === Your amazon-auth-proxy name
+name: paproxy＠ほんのメモ帳
+
+# === Support Locales
+locales:
+ - jp
+ - us
+ - ca
+ - de
+ - fr
+ - uk

@@ -18,7 +18,7 @@
       %tr
         %td= proxy.name
         -if proxy.user
-          -if proxy.user.url
+          -if proxy.user.url && proxy.user.url != ""
             %td
               %a{href: proxy.user.url}= proxy.user.name
           -else
