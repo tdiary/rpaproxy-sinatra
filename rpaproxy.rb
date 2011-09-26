@@ -153,7 +153,7 @@ end
 # リバースプロキシ http://rpaproxy.heroku.com/rpaproxy/jp/
 get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 	# FIXME: 全件取得しているのを最適化したい
-	proxies = Proxy.where(locales: locale).asc('_id').only(:endpoint)
+	proxies = Proxy.where(locales: locale).asc('_id').only(:endpoint).to_a
 	# 取得したプロキシをランダムに並べ替え
 	proxies.concat(proxies.slice!(0, rand(proxies.length)))
 	res = nil
