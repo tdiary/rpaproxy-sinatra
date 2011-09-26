@@ -4,7 +4,7 @@ $(function() {
   });
 
   $(':radio[name=locale]').click(function(e) {
-    var base_url = 'http://rpaproxy.heroku.com/rpaproxy/';
+    var base_url = location.href + 'rpaproxy/';
     $('#endpoint').val(base_url + $(e.target).val() + '/');
   });
 
