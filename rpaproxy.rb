@@ -40,7 +40,7 @@ configure :development, :production do
 end
 
 configure :production do
-	# require 'newrelic_rpm'
+	require 'newrelic_rpm'
 end
 
 helpers do
