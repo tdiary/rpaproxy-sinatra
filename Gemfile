@@ -6,6 +6,7 @@ gem "omniauth"
 gem "haml"
 gem "rack-flash"
 
+gem "newrelic_rpm"
 gem "rake"
 
 group :test do
