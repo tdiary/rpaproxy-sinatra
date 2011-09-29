@@ -17,6 +17,8 @@ use Rack::Flash
 enable :sessions
 #use Rack::Session::Cookie
 
+use Rack::Logger
+
 use OmniAuth::Builder do
 	provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
 end
@@ -50,6 +52,7 @@ helpers do
 end
 
 before do
+	request.logger.debug "debug!"
 	content_type :html, 'charset' => 'utf-8'
 end
 
@@ -61,10 +64,7 @@ before '/proxy*' do
 	redirect '/' unless current_user
 end
 
-get '/login' do
-	"<a href='/auth/twitter'>Sign in with Twitter</a>"
-end
-
+# ログアウト
 get '/logout' do
 	session[:user_id] = nil
 	redirect '/'
@@ -81,6 +81,7 @@ get '/auth/:name/callback' do
 	@current_user = User.find_or_create_with_omniauth(auth)
 	session[:user_id] = @current_user.uid
 	flash[:notice] = "ログインしました"
+	request.logger.info "[INFO] @#{current_user.screen_name} logged in"
 	redirect '/profile'
 end
 
@@ -96,8 +97,10 @@ put '/profile/:id' do
 	user.name = params[:name]
 	user.url = params[:url]
 	if user.save
+		request.logger.info "[INFO] updated profile by @#{current_user.screen_name}"
 		flash[:notice] = "プロフィールを更新しました"
 	else
+		request.logger.error "[ERROR] failed to update profile. #{user.errors.full_messages}"
 		flash[:error] = "プロフィールを更新できませんでした。#{user.errors.full_messages}"
 	end
 	redirect '/profile'
@@ -114,11 +117,14 @@ post '/proxy' do
 	proxy = Proxy.new(endpoint: params[:endpoint], user: current_user)
 	begin
 		if proxy.save
+			request.logger.info "[INFO] added proxy by @#{current_user.screen_name}"
 			flash[:notice] = "プロキシを追加しました"
 		else
+			request.logger.error "[ERROR] failed to add proxy. #{proxy.errors.full_messages}"
 			flash[:error] = "プロキシの追加に失敗しました。#{proxy.errors.full_messages}"
 		end
 	rescue StandardError => e
+		request.logger.error "[ERROR] failed to add proxy. #{e.class}: #{e.message}"
 		flash[:error] = "プロキシの追加に失敗しました。 #{e.class}: #{e.message}"
 	end
 	redirect '/profile'
@@ -132,11 +138,14 @@ put '/proxy/:id' do
 	# proxy.endpoint = params[:endpoint]
 	begin
 		if proxy.save
+			request.logger.info "[INFO] updated proxy by @#{current_user.screen_name}"
 			flash[:notice] = "プロキシ情報を更新しました"
 		else
+			request.logger.error "[ERROR] failed to update proxy. #{proxy.errors.full_messages}"
 			flash[:error] = "プロキシ情報の更新に失敗しました。#{proxy.errors.full_messages}"
 		end
 	rescue StandardError => e
+		request.logger.error "[ERROR] failed to update proxy. #{e.class}: #{e.message}"
 		flash[:error] = "プロキシ情報の更新に失敗しました。 #{e.class}: #{e.message}"
 	end
 	redirect '/profile'
@@ -146,6 +155,7 @@ delete '/proxy/:id' do
 	proxy = Proxy.find(params[:id])
 	raise StandardError.new("error") unless current_user.id == proxy.user.id
 	proxy.destroy
+	request.logger.info "[INFO] deleted proxy by @#{current_user.screen_name}"
 	flash[:notice] = "プロキシ情報を削除しました"
 	redirect '/profile'
 end
@@ -170,6 +180,7 @@ get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 	end
 	unless res.kind_of? Net::HTTPFound
 		# TODO: トータルの失敗回数を増分
+		request.logger.error "[ERROR] failed to return response"
 		halt 503, "proxy unavailable"
 	end
 	redirect res['location'], 302
