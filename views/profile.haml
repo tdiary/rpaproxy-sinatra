@@ -24,11 +24,12 @@
     .description
       %ul
         %li
-          エンドポイント直下に
-          %a{href: "http://honnomemo.appspot.com/rpaproxy/help/config/"}遠隔設定ファイル(rpaproxy.yaml)
-          を設置し、公開して下さい（
-          %a{href: "rpaproxy.yaml"}例
-          ）。
+          %a{href: 'http://sho.tdiary.net/20090706.html#p01'} amazon-auth-proxy の仕様
+          に準拠したプロキシのエンドポイントURLを設定してください。
+        %li
+          エンドポイント直下に遠隔設定ファイル (
+          %a{href: "rpaproxy.yaml"}rpaproxy.yaml
+          ) を設置して下さい。
         %li 負荷の関係上、Amazon APIコール結果ではなく、認証Signature付きURLを302 Foundで返すようにお願いします。
         %li リバース・プロキシからのHTTPリクエストヘッダのUser-Agentには、"rpaproxy/x.xx"(x.xxはバージョン)が含まれます。
   %input{type: 'submit', value: 'プロキシ追加'}
