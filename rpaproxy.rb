@@ -8,6 +8,7 @@ require 'haml'
 
 require './models/user.rb'
 require './models/proxy.rb'
+require './models/log.rb'
 
 # Encoding::default_external = 'UTF-8'
 
@@ -189,9 +190,11 @@ get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 	end
 	unless res.kind_of? Net::HTTPFound
 		# TODO: トータルの失敗回数を増分
+		Log.create(atag: params['AssociateTag'], locale: locale, created_at: Time.now, success: false)
 		request.logger.error "[ERROR] failed to return response"
 		halt 503, "proxy unavailable"
 	end
+	Log.create(atag: params['AssociateTag'], locale: locale, created_at: Time.now, success: true)
 	redirect res['location'], 302
 end
 
