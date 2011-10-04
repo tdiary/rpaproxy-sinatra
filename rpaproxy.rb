@@ -34,10 +34,15 @@ configure :development, :production do
 	raise StandardError.new("not found ENV['TWITTER_KEY']") unless ENV['TWITTER_KEY']
 	raise StandardError.new("not found ENV['TWITTER_SECRET']") unless ENV['TWITTER_SECRET']
 	Mongoid.configure do |config|
-		raise StandardError.new("not found ENV['MONGOHQ_URL']") unless ENV['MONGOHQ_URL']
-		uri  = URI.parse(ENV['MONGOHQ_URL'])
-		conn = Mongo::Connection.from_uri(ENV['MONGOHQ_URL'])
-		config.master = conn.db(uri.path.gsub(/^\//, ''))
+		# raise StandardError.new("not found ENV['MONGOHQ_URL']") unless ENV['MONGOHQ_URL']
+		if ENV['MONGOHQ_URL']
+			uri  = URI.parse(ENV['MONGOHQ_URL'])
+			conn = Mongo::Connection.from_uri(ENV['MONGOHQ_URL'])
+			config.master = conn.db(uri.path.gsub(/^\//, ''))
+		else
+			conn = Mongo::Connection.new
+			config.master = conn.db('test')
+		end
 	end
 end
 
@@ -48,6 +53,10 @@ end
 helpers do
 	def current_user
 		@current_user ||= User.where(uid: session[:user_id]).first if session[:user_id]
+	end
+
+	def locales
+		['jp', 'us', 'ca', 'de', 'fr', 'uk', 'es', 'it', 'cn']
 	end
 end
 

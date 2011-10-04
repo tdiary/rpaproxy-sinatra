@@ -4,12 +4,8 @@
     %tr
       %th プロキシ名
       %th 提供者
-      %th jp
-      %th us
-      %th ca
-      %th de
-      %th fr
-      %th uk
+      -for locale in locales
+        %th= locale
       %th 要求
       %th 成功
       %th 失敗
@@ -25,7 +21,7 @@
             %td= proxy.user.name
         -else
           %td
-        -for locale in ['jp', 'us', 'ca', 'de', 'fr', 'uk']
+        -for locale in locales
           -if proxy.locales.include?(locale)
             %td ○
           -else

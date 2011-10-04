@@ -4,7 +4,7 @@
     %input#endpoint.form-text{size: 120}
   %p
     Location:
-    -for locale in ['jp', 'us', 'ca', 'de', 'fr', 'uk']
+    -for locale in locales
       %label{for: locale}
         %input{id: locale, type: 'radio', name: 'locale', value: locale}
         =locale
