@@ -8,4 +8,7 @@ class Log
 	field :locale, type: String
 	field :created_at, type: DateTime
 	field :success, type: Boolean
+	field :response, type: Float
+
+	belongs_to :proxy
 end

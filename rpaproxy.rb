@@ -179,8 +179,16 @@ get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 	res = nil
 	proxies.each do |proxy|
 		begin
+			start_time = Time.now
 			res = proxy.fetch(locale, request.query_string)
 			proxy.inc(:success, 1)
+			Log.create(
+				atag: params['AssociateTag'],
+				locale: locale,
+				created_at: Time.now,
+				response: Time.now - start_time,
+				proxy: proxy,
+				success: true)
 			break
 		rescue => e
 			STDERR.puts "Error: #{e.class}, #{e.message}"
@@ -190,11 +198,14 @@ get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 	end
 	unless res.kind_of? Net::HTTPFound
 		# TODO: トータルの失敗回数を増分
-		Log.create(atag: params['AssociateTag'], locale: locale, created_at: Time.now, success: false)
+		Log.create(
+			atag: params['AssociateTag'],
+			locale: locale,
+			created_at: Time.now,
+			success: false)
 		request.logger.error "[ERROR] failed to return response"
 		halt 503, "proxy unavailable"
 	end
-	Log.create(atag: params['AssociateTag'], locale: locale, created_at: Time.now, success: true)
 	redirect res['location'], 302
 end
 
