@@ -209,6 +209,11 @@ get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 	redirect res['location'], 302
 end
 
+get '/logs' do
+	@logs = Log.all
+	haml :logs
+end
+
 get '/debug' do
 	raise StandardError.new('デバッグ')
 end
