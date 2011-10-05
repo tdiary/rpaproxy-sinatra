@@ -10,7 +10,7 @@
       %th 応答時間 (msec)
     -for log in @logs
       %tr
-        %td= log.created_at.new_offset(Rational(-5, 24))
+        %td= log.created_at.new_offset(Rational(9, 24))
         %td= log.locale
         %td= log.proxy.name if log.proxy
         %td= log.atag
