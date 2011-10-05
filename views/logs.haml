@@ -7,13 +7,12 @@
       %th ロケール
       %th プロキシ
       %th AssociateTag
-      %th 応答時間
+      %th 応答時間 (msec)
     -for log in @logs
       %tr
         %td= log.created_at.new_offset(Rational(-5, 24))
         %td= log.locale
         %td= log.proxy.name if log.proxy
         %td= log.atag
-        %td= sprintf("%.1f", log.response * 1000) if log.response
-
+        %td{style: 'text-align: right'}= sprintf("%d", log.response * 1000) if log.response
 
