@@ -9,6 +9,7 @@ require 'haml'
 require './models/user.rb'
 require './models/proxy.rb'
 require './models/log.rb'
+require './models/stat.rb'
 
 # Encoding::default_external = 'UTF-8'
 
