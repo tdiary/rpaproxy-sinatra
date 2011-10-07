@@ -13,5 +13,5 @@
         %tr
           %td= atag_report.atag
           %td= atag_report.count
-          %td= sprintf("%.1f", atag_report.ratio)
+          %td= "#{(atag_report.ratio * 100).to_i}%"
 
