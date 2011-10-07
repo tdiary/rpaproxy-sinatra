@@ -1,17 +1,38 @@
-%h2 stats
+%script{src: '/js/jquery-ui-1.8.16.custom.min.js'}
+%script{language: 'javascript'}
+  $(function() { $('#tabs').tabs(); });
 
--for stat in @stats
-  %h3= stat.locale
+%h2 アクセス統計
 
-  %table{cellpadding: '0', cellspacing: '0'}
-    %tbody
-      %tr
-        %th associate_tag
-        %th count
-        %th ratio
-      -for atag_report in stat.atag_reports
-        %tr
-          %td= atag_report.atag
-          %td= atag_report.count
-          %td= "#{(atag_report.ratio * 100).to_i}%"
+%h3 総アクセス数
+
+%table{cellpadding: '0', cellspacing: '0'}
+  %tbody
+    %tr
+      -for stat in @stats
+        %th= stat.locale
+    %tr
+      -for stat in @stats
+        %td= stat.count
+
+%h3 アクセス元
+
+#tabs
+  %ul
+    -for stat in @stats
+      %li
+        %a{href: "#tabs-#{stat.locale}"}= stat.locale
+  -for stat in @stats
+    %div{id: "tabs-#{stat.locale}"}
+      %table{cellpadding: '0', cellspacing: '0'}
+        %tbody
+          %tr
+            %th associate_tag
+            %th count
+            %th ratio
+          -for atag_report in stat.atag_reports
+            %tr
+              %td= atag_report.atag
+              %td= atag_report.count
+              %td= "#{(atag_report.ratio * 100).to_i}%"
 

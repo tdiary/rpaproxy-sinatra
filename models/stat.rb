@@ -5,8 +5,8 @@ require 'mongoid'
 
 class Stat
 	include Mongoid::Document
-	# field :date, type: Date
 	field :locale, type: String
+	field :count, type: Integer
 	embeds_many :atag_reports
 
 	def self.create_by_logs(locale)
@@ -20,12 +20,11 @@ class Stat
 		atags.each do |atag, atag_report|
 			atag_report.ratio = atag_report.count.to_f / logs.count.to_f
 		end
-		stat = Stat.create(locale: locale, atag_reports: atags.map{|k,v| v})
-		#atags.each do |key, value|
-			# stat.atag_reports << value
-		# end
-		# stat.save
-		# stat
+		stat = Stat.create(
+			locale: locale,
+			count: logs.count,
+			atag_reports: atags.map{|k,v| v}.sort{|a,b| b.count <=> a.count}
+		)
 	end
 end
 
