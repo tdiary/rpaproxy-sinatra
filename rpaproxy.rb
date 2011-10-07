@@ -209,6 +209,12 @@ get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 	redirect res['location'], 302
 end
 
+get '/stats' do
+	Stat.destroy_all
+	@stats = locales.map{|locale| Stat.create_by_logs(locale) }
+	haml :stats
+end
+
 get '/logs' do
 	@logs = Log.all
 	haml :logs
