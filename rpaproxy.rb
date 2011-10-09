@@ -6,6 +6,12 @@ require 'mongoid'
 require 'omniauth'
 require 'haml'
 
+# kaminariのセットアップ（モデルのロード前に読み込む必要あり）
+require 'kaminari'
+require 'kaminari/models/mongoid_extension.rb'
+::Mongoid::Document.send :include, Kaminari::MongoidExtension::Document
+::Mongoid::Criteria.send :include, Kaminari::MongoidExtension::Criteria
+
 require './models/user.rb'
 require './models/proxy.rb'
 require './models/log.rb'
@@ -217,7 +223,9 @@ get '/stats' do
 end
 
 get '/logs' do
-	@logs = Log.all
+	# @logs = Log.all
+	# @logs = Log.paginate(:page => params[:page], :per_page => 10)
+	@logs = Log.order_by('$natural').page(params[:page]).par(10)
 	haml :logs
 end
 
