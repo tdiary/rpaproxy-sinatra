@@ -12,6 +12,28 @@ require 'kaminari/models/mongoid_extension.rb'
 ::Mongoid::Document.send :include, Kaminari::MongoidExtension::Document
 ::Mongoid::Criteria.send :include, Kaminari::MongoidExtension::Criteria
 
+require 'action_view'
+require 'action_view/buffers'
+require 'action_view/log_subscriber'
+module Kaminari
+	module SinatraExtention
+		def paginate(scope, options = {}, &block)
+			paginator = Kaminari::Helpers::Paginator.new(
+				self,
+				options.reverse_merge(
+					:current_page => scope.current_page,
+					:num_pages => scope.num_pages,
+					:per_page => scope.limit_value,
+					:param_name => Kaminari.config.param_name,
+					:remote => false)
+			)
+			paginator.to_s
+		end
+	end
+
+	helpers SinatraExtention
+end
+
 require './models/user.rb'
 require './models/proxy.rb'
 require './models/log.rb'
