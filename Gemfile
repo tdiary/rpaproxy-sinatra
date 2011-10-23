@@ -5,7 +5,7 @@ gem "bson_ext", "~> 1.3"
 gem "omniauth"
 gem "haml"
 gem "rack-flash"
-gem "kaminari"
+gem "kaminari", git: 'https://github.com/amatsuda/kaminari.git'
 
 group :production do
 	gem "newrelic_rpm"

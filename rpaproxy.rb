@@ -12,26 +12,46 @@ require 'kaminari/models/mongoid_extension.rb'
 ::Mongoid::Document.send :include, Kaminari::MongoidExtension::Document
 ::Mongoid::Criteria.send :include, Kaminari::MongoidExtension::Criteria
 
-require 'action_view'
-require 'action_view/buffers'
-require 'action_view/log_subscriber'
-module Kaminari
-	module SinatraExtention
-		def paginate(scope, options = {}, &block)
-			paginator = Kaminari::Helpers::Paginator.new(
-				self,
-				options.reverse_merge(
-					:current_page => scope.current_page,
-					:num_pages => scope.num_pages,
-					:per_page => scope.limit_value,
-					:param_name => Kaminari.config.param_name,
-					:remote => false)
-			)
-			paginator.to_s
-		end
+helpers do
+	require 'action_view'
+	require 'action_view/buffers'
+	require 'action_view/log_subscriber'
+	def paginate(scope, options = {}, &block)
+		paginator = Kaminari::Helpers::Paginator.new(
+			self,
+			options.reverse_merge(
+				current_page: scope.current_page,
+				num_pages: scope.num_pages,
+				per_page: scope.limit_value,
+				param_name: Kaminari.config.param_name,
+				remote: false)
+		)
+		paginator.to_s
+	end
+end
+
+helpers do
+	def partial(renderer, template, options = {}, locals)
+		options = options.merge({:layout => false})
+		template = "#{template.to_s}".to_sym
+		m = method(renderer)
+		m.call(template, options, locals)
 	end
 
-	helpers SinatraExtention
+	def url_for(params)
+		'test'
+	end
+end
+
+module Kaminari
+	module Helpers
+		class Tag
+			def to_s(locals = {})
+				locals.merge({paginator: self})
+				@template.partial(:haml, "_kaminari/_#{self.class.name.demodulize.underscore}.html", @options, locals)
+			end
+		end
+	end
 end
 
 require './models/user.rb'
@@ -247,7 +267,7 @@ end
 get '/logs' do
 	# @logs = Log.all
 	# @logs = Log.paginate(:page => params[:page], :per_page => 10)
-	@logs = Log.order_by('$natural').page(params[:page]).par(10)
+	@logs = Log.order_by('$natural').page(params[:page])
 	haml :logs
 end
 
