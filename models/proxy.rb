@@ -33,6 +33,7 @@ class Proxy
 	end
 
 	def parse_yaml
+		self.endpoint = endpoint.sub(/\/$/, '') + '/'
 		uri = URI.parse(endpoint + 'rpaproxy.yaml')
 		raise StandardError.new("エンドポイントのURLが不正です。: #{endpoint}") if uri.scheme != 'http'
 		res = Net::HTTP.start(uri.host, uri.port) {|http|
