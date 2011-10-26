@@ -17,9 +17,11 @@
 
         %a{href: '/'} トップページ
         %a{href: '/proxies'} プロキシ一覧
-        %a{href: '/stats'} 利用状況
 
         -if current_user
+          %a{href: '/users'} 提供者一覧
+          %a{href: '/logs'} ログ
+          %a{href: '/stats'} 利用状況
           %a{href: '/profile'} 設定
           %a{href: '/logout'} ログアウト
         -else

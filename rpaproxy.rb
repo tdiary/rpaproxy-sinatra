@@ -217,13 +217,14 @@ get '/stats' do
 end
 
 get '/logs' do
-	@logs = Log.all
+	redirect '/' unless current_user
+	@logs = Log.desc('$natural').limit(100).reverse
 	haml :logs
 end
 
 get '/users' do
 	redirect '/' unless current_user
-	@users = User.all
+	@users = User.all.select{|user| user.proxies.size > 0 }
 	haml :users
 end
 
