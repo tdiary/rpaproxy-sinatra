@@ -1,0 +1,12 @@
+%h2 プロキシ提供者の皆様
+
+%ul
+  -for user in @users
+    %li
+      %a{href: user.url}
+        =user.name
+      (
+      %a{href: "http://twitter.com/#{user.screen_name}"}
+        ="@#{user.screen_name}"
+      )
+

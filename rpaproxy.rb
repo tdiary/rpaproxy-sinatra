@@ -221,6 +221,12 @@ get '/logs' do
 	haml :logs
 end
 
+get '/users' do
+	redirect '/' unless current_user
+	@users = User.all
+	haml :users
+end
+
 get '/debug' do
 	raise StandardError.new('デバッグ')
 end
