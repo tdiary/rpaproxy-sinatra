@@ -1,7 +1,8 @@
 source 'http://rubygems.org'
 gem 'sinatra'
-gem "mongoid", "~> 2.2.1"
-gem "bson_ext", "~> 1.3"
+gem "mongoid"
+gem "bson", "~> 1.5.2"
+gem "bson_ext", "~> 1.5.2"
 gem "omniauth"
 gem "haml"
 gem "rack-flash"
