@@ -5,7 +5,7 @@ gem "bson_ext", "~> 1.3"
 gem "omniauth", "~> 0.3"
 gem "haml"
 gem "rack-flash"
-gem "rack", "~> 1.3"
+gem "rack", "~> 1.3.6"
 
 group :production do
 	gem "newrelic_rpm"
