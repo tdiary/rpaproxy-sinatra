@@ -173,6 +173,11 @@ end
 
 # リバースプロキシ http://rpaproxy.heroku.com/rpaproxy/jp/
 get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
+	if ENV['IGNORE_ASSOCIATE_TAGS']
+		if ENV['IGNORE_ASSOCIATE_TAGS'].split(',').include?(params['AssociateTag'])
+			halt 403, "403 forbidden: access is denied"
+		end
+	end
 	# FIXME: 全件取得しているのを最適化したい
 	proxies = Proxy.where(locales: locale).asc('_id').only(:endpoint).to_a
 	# 取得したプロキシをランダムに並べ替え
