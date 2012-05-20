@@ -26,6 +26,7 @@ use OmniAuth::Builder do
 end
 
 set :haml, { format: :html5, escape_html: true }
+set :protection, except: :session_hijacking
 
 # TODO: DB接続設定を外部ファイルへ移動する
 configure :test do
