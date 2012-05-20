@@ -64,9 +64,6 @@ helpers do
 end
 
 before do
-	info = %w[HTTP_USER_AGENT HTTP_ACCEPT_ENCODING HTTP_ACCEPT_LANGUAGE].map {|k| "#{k}: #{request.env[k]}" }.join(", ")
-	request.logger.info info
-	request.logger.debug "debug!"
 	content_type :html, 'charset' => 'utf-8'
 end
 
