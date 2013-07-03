@@ -21,8 +21,8 @@ class User
 		unless user
 			user = create! do |user|
 				user.uid = auth['uid']
-				user.name = auth['user_info']['name']
-				user.screen_name = auth['user_info']['nickname']
+				user.name = auth['info']['name']
+				user.screen_name = auth['info']['nickname']
 			end
 		end
 		user

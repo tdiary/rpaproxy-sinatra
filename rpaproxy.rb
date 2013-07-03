@@ -4,6 +4,7 @@ require 'rack-flash'
 require 'sinatra'
 require 'mongoid'
 require 'omniauth'
+require 'omniauth-twitter'
 require 'haml'
 
 require './models/user.rb'
