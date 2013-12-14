@@ -29,9 +29,9 @@ configure :development, :production do
 	raise StandardError.new("not found ENV['TWITTER_SECRET']") unless ENV['TWITTER_SECRET']
 	Mongoid.configure do |config|
 		# raise StandardError.new("not found ENV['MONGOHQ_URL']") unless ENV['MONGOHQ_URL']
-		if ENV['MONGOHQ_URL']
-			uri  = URI.parse(ENV['MONGOHQ_URL'])
-			conn = Mongo::Connection.from_uri(ENV['MONGOHQ_URL'])
+		if mongo_uri = (ENV['MONGOHQ_URL'] || ENV['MONGOLAB_URI'])
+			uri  = URI.parse(mongo_uri)
+			conn = Mongo::Connection.from_uri(mongo_uri)
 			config.master = conn.db(uri.path.gsub(/^\//, ''))
 		else
 			conn = Mongo::Connection.new
