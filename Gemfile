@@ -1,20 +1,24 @@
-source 'http://rubygems.org'
-gem 'sinatra'
-gem "mongoid", "~> 2.2.1"
-gem "bson_ext", "~> 1.3"
-gem "omniauth", "~> 1.0"
-gem "omniauth-twitter"
-gem "haml"
-gem "rack-flash"
-gem "rack", "~> 1.3.6"
+source 'https://rubygems.org'
 
-group :production do
-	gem "newrelic_rpm"
-end
+ruby '2.0.0'
 
 gem "rake"
+gem 'sinatra'
+gem "rack-flash"
+
+gem "mongoid", '~> 2.2'
+gem "bson_ext"
+
+gem "omniauth"
+gem "omniauth-twitter"
+
+gem "haml"
 
 group :test do
 	gem "rspec"
 	gem "rack-test"
+end
+
+group :production do
+	gem "newrelic_rpm"
 end
