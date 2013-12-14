@@ -29,18 +29,12 @@
             %img{src: 'sign-in-with-twitter-l.png', alt: 'Twitterでログイン'}
 
     #content-outer
-  
+
       %h1
         Product Advertising API用リバースプロキシ
-    
-      -if flash.has?(:error)
-        .error=flash[:error]
-  
-      -if flash.has?(:notice)
-        .notice=flash[:notice]
-  
+
       != yield
-  
+
     #footer-outer
       #footer
         Presented by
