@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-require 'rack-flash'
 require 'sinatra'
 require 'mongoid'
 require 'omniauth'
@@ -76,7 +75,6 @@ get '/auth/:name/callback' do
 	auth = request.env['omniauth.auth']
 	@current_user = User.find_or_create_with_omniauth(auth)
 	session[:user_id] = @current_user.uid
-	flash[:notice] = "ログインしました"
 	request.logger.info "[INFO] @#{current_user.screen_name} logged in"
 	redirect '/profile'
 end
@@ -94,10 +92,8 @@ put '/profile/:id' do
 	user.url = params[:url]
 	if user.save
 		request.logger.info "[INFO] updated profile by @#{current_user.screen_name}"
-		flash[:notice] = "プロフィールを更新しました"
 	else
 		request.logger.error "[ERROR] failed to update profile. #{user.errors.full_messages}"
-		flash[:error] = "プロフィールを更新できませんでした。#{user.errors.full_messages}"
 	end
 	redirect '/profile'
 end
@@ -114,14 +110,11 @@ post '/proxy' do
 	begin
 		if proxy.save
 			request.logger.info "[INFO] added proxy by @#{current_user.screen_name}"
-			flash[:notice] = "プロキシを追加しました"
 		else
 			request.logger.error "[ERROR] failed to add proxy. #{proxy.errors.full_messages}"
-			flash[:error] = "プロキシの追加に失敗しました。#{proxy.errors.full_messages}"
 		end
 	rescue StandardError => e
 		request.logger.error "[ERROR] failed to add proxy. #{e.class}: #{e.message}"
-		flash[:error] = "プロキシの追加に失敗しました。 #{e.class}: #{e.message}"
 	end
 	redirect '/profile'
 end
@@ -135,14 +128,11 @@ put '/proxy/:id' do
 	begin
 		if proxy.save
 			request.logger.info "[INFO] updated proxy by @#{current_user.screen_name}"
-			flash[:notice] = "プロキシ情報を更新しました"
 		else
 			request.logger.error "[ERROR] failed to update proxy. #{proxy.errors.full_messages}"
-			flash[:error] = "プロキシ情報の更新に失敗しました。#{proxy.errors.full_messages}"
 		end
 	rescue StandardError => e
 		request.logger.error "[ERROR] failed to update proxy. #{e.class}: #{e.message}"
-		flash[:error] = "プロキシ情報の更新に失敗しました。 #{e.class}: #{e.message}"
 	end
 	redirect '/profile'
 end
@@ -152,7 +142,6 @@ delete '/proxy/:id' do
 	raise StandardError.new("error") unless current_user.id == proxy.user.id
 	proxy.destroy
 	request.logger.info "[INFO] deleted proxy by @#{current_user.screen_name}"
-	flash[:notice] = "プロキシ情報を削除しました"
 	redirect '/profile'
 end
 

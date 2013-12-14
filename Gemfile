@@ -4,7 +4,6 @@ ruby '2.0.0'
 
 gem "rake"
 gem 'sinatra'
-gem "rack-flash"
 
 gem "mongoid", '~> 2.2'
 gem "bson_ext"
