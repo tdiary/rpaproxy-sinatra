@@ -23,7 +23,6 @@ GEM
       mongo (~> 1.9)
       tzinfo (~> 0.3.22)
     multi_json (1.8.2)
-    newrelic_rpm (3.7.0.177)
     oauth (0.4.7)
     omniauth (1.1.4)
       hashie (>= 1.2, < 3)
@@ -64,7 +63,6 @@ DEPENDENCIES
   bson_ext
   haml
   mongoid (~> 2.2)
-  newrelic_rpm
   omniauth
   omniauth-twitter
   rack-flash
