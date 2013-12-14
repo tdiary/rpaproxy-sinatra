@@ -1,6 +1,5 @@
 require './rpaproxy'
 
-use Rack::Flash
 use Rack::Logger
 
 use OmniAuth::Builder do
