@@ -50,10 +50,6 @@ configure :development, :production do
 	end
 end
 
-configure :production do
-	require 'newrelic_rpm'
-end
-
 helpers do
 	def current_user
 		@current_user ||= User.where(uid: session[:user_id]).first if session[:user_id]
