@@ -12,6 +12,9 @@ require './models/log.rb'
 require './models/stat.rb'
 
 enable :sessions
+use OmniAuth::Builder do
+	provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
+end
 
 set :haml, { format: :html5, escape_html: true }
 set :protection, except: :session_hijacking
