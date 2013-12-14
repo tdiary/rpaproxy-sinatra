@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#
+
 require 'rack-flash'
 require 'sinatra'
 require 'mongoid'
@@ -12,19 +12,7 @@ require './models/proxy.rb'
 require './models/log.rb'
 require './models/stat.rb'
 
-# Encoding::default_external = 'UTF-8'
-
-use Rack::Flash
-
-# TODO: use secure session
 enable :sessions
-#use Rack::Session::Cookie
-
-use Rack::Logger
-
-use OmniAuth::Builder do
-	provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
-end
 
 set :haml, { format: :html5, escape_html: true }
 set :protection, except: :session_hijacking
