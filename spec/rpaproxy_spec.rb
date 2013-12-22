@@ -1,5 +1,5 @@
-require './rpaproxy'
-require 'rack/test'
+# -*- coding: utf-8 -*-
+require 'rpaproxy'
 
 set :environment, :test
 

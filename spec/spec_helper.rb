@@ -1,6 +1,6 @@
 # coding: utf-8
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
-#ENV['RACK_ENV'] = "test"
-#ENV['MONGOHQ_URL'] = 'mongodb://travis:travis@127.0.0.1:27017/myapp'
-#ENV['TWITTER_KEY'] = 'your twitter key'
-#ENV['TWITTER_SECRET'] = 'your twitter secret'
+require 'rack/test'
+
+require 'models/proxy'
