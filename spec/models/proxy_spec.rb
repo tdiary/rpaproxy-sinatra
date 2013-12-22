@@ -1,10 +1,15 @@
 require 'spec_helper'
 
 describe Proxy do
+  before do
+    stub_request(:get, 'http://www.machu.jp/amazon_proxy/jp/?test=aaa').to_return(status: 302, :headers => { 'Location' => 'http://www.example.com' })
+    @proxy = Proxy.new(endpoint: 'http://www.machu.jp/amazon_proxy/')
+  end
+
+  subject { @proxy.fetch('jp', 'test=aaa') }
+
 	it 'should fetch proxy' do
-		proxy = Proxy.new(endpoint: 'http://www.machu.jp/amazon_proxy/')
-		res = proxy.fetch('jp', 'test=aaa')
-		res.code.should == '302'
-		res['location'].should be_true
+		expect(subject.code).to eq '302'
+		expect(subject['location']).to be_true
 	end
 end
