@@ -1,1 +1,4 @@
+language: ruby
+services: mongodb
+
 rvm: 2.0.0
