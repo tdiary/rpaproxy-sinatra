@@ -9,3 +9,7 @@ ENV['TWITTER_KEY'] = ENV["TWITTER_SECRET"] = "dummy"
 require 'rpaproxy'
 
 set :environment, :test
+
+RSpec.configure do |c|
+  c.include Rack::Test::Methods
+end

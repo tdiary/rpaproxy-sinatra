@@ -2,8 +2,6 @@
 require 'spec_helper'
 
 describe 'rpaproxy' do
-  include Rack::Test::Methods
-
 	def app
 		Sinatra::Application
 	end
