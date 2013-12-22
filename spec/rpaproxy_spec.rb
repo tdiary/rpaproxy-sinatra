@@ -1,11 +1,7 @@
-require './rpaproxy'
-require 'rack/test'
-
-set :environment, :test
+# -*- coding: utf-8 -*-
+require 'spec_helper'
 
 describe 'rpaproxy' do
-	include Rack::Test::Methods
-
 	def app
 		Sinatra::Application
 	end
