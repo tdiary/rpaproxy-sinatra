@@ -27,6 +27,8 @@
         -else
           %a{href: '/auth/twitter'}
             %img{src: 'sign-in-with-twitter-l.png', alt: 'Twitterでログイン'}
+          -unless settings.environment == :production
+            %a{href: '/auth/developer'} ログイン(開発用)
 
     #content-outer
 

@@ -14,6 +14,7 @@ require './models/stat.rb'
 enable :sessions
 use OmniAuth::Builder do
 	provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
+	provider :developer unless production?
 end
 
 set :haml, { format: :html5, escape_html: true }
@@ -25,10 +26,7 @@ configure :test do
 end
 
 configure :development, :production do
-	raise StandardError.new("not found ENV['TWITTER_KEY']") unless ENV['TWITTER_KEY']
-	raise StandardError.new("not found ENV['TWITTER_SECRET']") unless ENV['TWITTER_SECRET']
 	Mongoid.configure do |config|
-		# raise StandardError.new("not found ENV['MONGOHQ_URL']") unless ENV['MONGOHQ_URL']
 		if mongo_uri = (ENV['MONGOHQ_URL'] || ENV['MONGOLAB_URI'])
 			uri  = URI.parse(mongo_uri)
 			conn = Mongo::Connection.from_uri(mongo_uri)
@@ -38,6 +36,11 @@ configure :development, :production do
 			config.master = conn.db('test')
 		end
 	end
+end
+
+configure :production do
+	raise StandardError.new("not found ENV['TWITTER_KEY']") unless ENV['TWITTER_KEY']
+	raise StandardError.new("not found ENV['TWITTER_SECRET']") unless ENV['TWITTER_SECRET']
 end
 
 helpers do
@@ -74,8 +77,19 @@ get '/' do
 end
 
 # ログイン処理
-get '/auth/:name/callback' do
+get '/auth/twitter/callback' do
 	auth = request.env['omniauth.auth']
+	@current_user = User.find_or_create_with_omniauth(auth)
+	session[:user_id] = @current_user.uid
+	request.logger.info "[INFO] @#{current_user.screen_name} logged in"
+	redirect '/profile'
+end
+
+# ログイン処理（開発用）
+post '/auth/developer/callback' do
+	auth = request.env['omniauth.auth']
+	auth['uid'] = auth['info']['nickname'] = auth['info']['name']
+	request.logger.info request.env['omniauth.auth'].inspect
 	@current_user = User.find_or_create_with_omniauth(auth)
 	session[:user_id] = @current_user.uid
 	request.logger.info "[INFO] @#{current_user.screen_name} logged in"
