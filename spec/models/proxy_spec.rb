@@ -58,26 +58,25 @@ describe Proxy do
 	describe '#valid_endpoint?' do
 		subject { @proxy.valid_endpoint? }
 
-		it { expect(subject).to eq true }
+		it { expect(subject).to be_true }
 
-		context 'response does not include an SubscriptionId and AWSAccessKeyId' do
+		context 'when response does not include an SubscriptionId and AWSAccessKeyId' do
 			before {
 				stub_request(:any, "#{ENDPOINT}jp/")
 					.with(query: hash_including({AssociateTag: 'sample-22'}))
 					.to_return(status: 302, headers: { Location: 'http://webservices.amazon.co.jp/onca/xml?AssociateTag=sample-22&ItemPage=1&Keywords=Amazon&Operation=ItemSearch&ResponseGroup=Small&SearchIndex=Books&Service=AWSECommerceService&Timestamp=2014-01-18T14%3A18%3A21Z&Version=2007-10-29&Signature=wwqaq0qp77Xun%2BcXHgnMpRtIewohTQPpatN8mUwdv1k%3D' })		
 			}
 
-			it { expect(subject).to eq false }
+			it { expect(subject).to be_false }
 		end
 
 		context 'when a proxy does not return 302' do
-			it 'should return false' do
+			before {
 				stub_request(:any, "#{ENDPOINT}jp/")
 					.with(query: hash_including({AssociateTag: 'sample-22'}))
 					.to_return(status: 200)
-
-				expect(subject).to eq false
-			end
+				}
+			it { expect(subject).to be_false }
 		end
 	end
 end
