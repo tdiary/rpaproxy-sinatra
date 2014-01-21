@@ -1,45 +1,41 @@
 require 'spec_helper'
 
-PROXY_ENDPOINT = 'http://proxy.example.com/endpoint/'
-ILLIGAL_PROXY_ENDPOINT = 'http://illigal.example.com/endpoint/'
+ENDPOINT = 'http://proxy.example.com/endpoint/'
 
 describe Proxy do
 	before do
-		@proxy = Proxy.new(endpoint: PROXY_ENDPOINT, locales: ['jp', 'en'])
+		@proxy = Proxy.new(endpoint: ENDPOINT, locales: ['jp', 'en'])
 	end
 
 	describe '#fetch' do
-		before do
-			stub_request(:get, "#{PROXY_ENDPOINT}jp/?test=aaa")
-				.to_return(status: 302, headers: { Location: 'http://www.example.com' })
-		end
+		before {
+			stub_request(:get, "#{ENDPOINT}jp/?key=value")
+				.to_return(status: 302, headers: { Location: 'http://res.example.com' })
+		}
 
-		subject { @proxy.fetch('jp', 'test=aaa') }
+		subject { @proxy.fetch('jp', 'key=value') }
 
 		it 'should fetch proxy' do
 			subject
-			WebMock.should have_requested(:get, "#{PROXY_ENDPOINT}jp/")
-				.with(query: {test: 'aaa'})
+			WebMock.should have_requested(:get, "#{ENDPOINT}jp/")
+				.with(query: {key: 'value'})
 		end
 
-		it 'should return a response made by the endpoint' do
-			expect(subject.code).to eq '302'
-			expect(subject['location']).to be_true
-		end
-
+		it { expect(subject.code).to eq '302' }
+		it { expect(subject['location']).to eq 'http://res.example.com' }
 		it { expect{ subject }.to change{ @proxy.success }.from(0).to(1) }
 
 		context "when an endpoint doesn't return 302" do
-			before { stub_request(:get, "#{PROXY_ENDPOINT}jp/?test=404").to_return(status: 404) }
-			subject { @proxy.fetch('jp', 'test=404') }
+			before { stub_request(:get, "#{ENDPOINT}jp/?key=404").to_return(status: 404) }
+			subject { @proxy.fetch('jp', 'key=404') }
 
 			it { expect(subject).to be_nil }
 			it { expect{ subject }.to change{ @proxy.failure }.from(0).to(1) }
 		end
 
 		context "when timeout" do
-			before { stub_request(:get, "#{PROXY_ENDPOINT}jp/?test=timeout").to_timeout }
-			subject { @proxy.fetch('jp', 'test=timeout') }
+			before { stub_request(:get, "#{ENDPOINT}jp/?key=timeout").to_timeout }
+			subject { @proxy.fetch('jp', 'key=timeout') }
 
 			it { expect(subject).to be_nil }
 			it { expect{ subject }.to change{ @proxy.failure }.from(0).to(1) }
@@ -48,7 +44,7 @@ describe Proxy do
 
 	describe '#parse_yaml' do
 		before do
-			stub_request(:get, "#{PROXY_ENDPOINT}rpaproxy.yaml")
+			stub_request(:get, "#{ENDPOINT}rpaproxy.yaml")
 				.to_return(status: 200, body: File.new('spec/fixtures/rpaproxy.yaml'))
 			@proxy.parse_yaml
 		end
@@ -68,7 +64,7 @@ describe Proxy do
 		subject { @proxy.valid_endpoint? }
 
 		it 'should return true' do
-			stub_request(:any, "#{PROXY_ENDPOINT}jp/")
+			stub_request(:any, "#{ENDPOINT}jp/")
 				.with(query: hash_including({AssociateTag: 'sample-22'}))
 				.to_return(status: 302, headers: { Location: 'http://webservices.amazon.co.jp/onca/xml?AssociateTag=sample-22&ItemPage=1&Keywords=Amazon&Operation=ItemSearch&ResponseGroup=Small&SearchIndex=Books&Service=AWSECommerceService&SubscriptionId=AKIAJMISDK2FBSFI3HAQ&Timestamp=2014-01-18T14%3A18%3A21Z&Version=2007-10-29&Signature=wwqaq0qp77Xun%2BcXHgnMpRtIewohTQPpatN8mUwdv1k%3D' })
 	
@@ -77,7 +73,7 @@ describe Proxy do
 
 		context 'response does not include an SubscriptionId and AWSAccessKeyId' do
 			it 'should return false' do
-				stub_request(:any, "#{PROXY_ENDPOINT}jp/")
+				stub_request(:any, "#{ENDPOINT}jp/")
 					.with(query: hash_including({AssociateTag: 'sample-22'}))
 					.to_return(status: 302, headers: { Location: 'http://webservices.amazon.co.jp/onca/xml?AssociateTag=sample-22&ItemPage=1&Keywords=Amazon&Operation=ItemSearch&ResponseGroup=Small&SearchIndex=Books&Service=AWSECommerceService&Timestamp=2014-01-18T14%3A18%3A21Z&Version=2007-10-29&Signature=wwqaq0qp77Xun%2BcXHgnMpRtIewohTQPpatN8mUwdv1k%3D' })
 
@@ -87,7 +83,7 @@ describe Proxy do
 
 		context 'when a proxy does not return 302' do
 			it 'should return false' do
-				stub_request(:any, "#{PROXY_ENDPOINT}jp/")
+				stub_request(:any, "#{ENDPOINT}jp/")
 					.with(query: hash_including({AssociateTag: 'sample-22'}))
 					.to_return(status: 200)
 
