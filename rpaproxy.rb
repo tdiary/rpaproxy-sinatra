@@ -178,7 +178,6 @@ get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 		begin
 			start_time = Time.now
 			res = proxy.fetch(locale, request.query_string)
-			proxy.inc(:success, 1)
 			Log.create(
 				atag: params['AssociateTag'],
 				locale: locale,
@@ -190,7 +189,6 @@ get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 		rescue => e
 			STDERR.puts "Error: #{e.class}, #{e.message}"
 			STDERR.puts "failure for #{proxy.endpoint}"
-			proxy.inc(:failure, 1)
 		end
 	end
 	unless res.kind_of? Net::HTTPFound

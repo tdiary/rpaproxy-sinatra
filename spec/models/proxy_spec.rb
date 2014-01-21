@@ -30,12 +30,12 @@ describe Proxy do
 			expect(subject['location']).to be_true
 		end
 
+		it { expect{ subject }.to change{ @proxy.success }.from(0).to(1) }
+
 		context 'endpointが302以外のステータスコードを返す場合' do
-			it 'expect raise StandardError' do
-				expect {
-					@illigal_proxy.fetch('jp', 'test=aaa')
-				}.to raise_error(StandardError)
-			end
+			subject { @illigal_proxy.fetch('jp', 'test=aaa') }
+			it { expect { subject }.to raise_error(StandardError) }
+			# it { expect{ subject }.to change{ @proxy.failure }.from(0).to(1) }
 		end
 	end
 
