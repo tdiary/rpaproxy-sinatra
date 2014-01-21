@@ -126,9 +126,11 @@ end
 
 post '/proxy' do
 	# create a new proxy
-	proxy = Proxy.new(endpoint: params[:endpoint], user: current_user)
+	# TODO: エラー処理
+	proxy = Proxy.new_with_yaml(params[:endpoint])
+	proxy.user = current_user
 	begin
-		if proxy.save
+		if proxy.valid_endpoint? && proxy.save
 			request.logger.info "[INFO] added proxy by @#{current_user.screen_name}"
 		else
 			request.logger.error "[ERROR] failed to add proxy. #{proxy.errors.full_messages}"

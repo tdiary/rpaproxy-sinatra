@@ -17,6 +17,14 @@ describe Proxy do
 			.to_return(status: 302, headers: { Location: 'http://webservices.amazon.co.jp/onca/xml?AssociateTag=sample-22&ItemPage=1&Keywords=Amazon&Operation=ItemSearch&ResponseGroup=Small&SearchIndex=Books&Service=AWSECommerceService&SubscriptionId=AKIAJMISDK2FBSFI3HAQ&Timestamp=2014-01-18T14%3A18%3A21Z&Version=2007-10-29&Signature=wwqaq0qp77Xun%2BcXHgnMpRtIewohTQPpatN8mUwdv1k%3D' })
 	end
 
+	describe '.new_with_yaml' do
+		subject { Proxy.new_with_yaml(ENDPOINT) }
+
+		it { expect(subject).to be_a_kind_of Proxy }
+		it { expect(subject.name).to eq 'Amazon認証プロキシ' }
+		it { expect(subject.locales).to eq ["jp", "us", "ca", "de", "fr", "uk"] }
+	end
+
 	describe '#fetch' do
 		subject { @proxy.fetch('jp', 'key=value') }
 
@@ -45,14 +53,6 @@ describe Proxy do
 			it { expect(subject).to be_nil }
 			it { expect{ subject }.to change{ @proxy.failure }.from(0).to(1) }
 		end
-	end
-
-	describe '#parse_yaml' do
-		before { @proxy.parse_yaml }
-		subject { @proxy }
-
-		it { expect(subject.name).to eq 'Amazon認証プロキシ' }
-		it { expect(subject.locales).to eq ["jp", "us", "ca", "de", "fr", "uk"] }
 	end
 
 	describe '#valid_endpoint?' do

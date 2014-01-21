@@ -11,15 +11,30 @@ class Proxy
 	field :locales, type: Array
 	field :success, type: Integer, default: 0
 	field :failure, type: Integer, default: 0
-	# referenced_in :user
+
 	belongs_to :user
 	index :locales
 
-	before_validation :parse_yaml
 	validates_presence_of :endpoint, :name, :locales
 	validates_uniqueness_of :endpoint
 
-	before_save :valid_endpoint?
+	def self.fetch(locale, query_string)
+		where(locales: locale).asc('_id').only(:endpoint).to_a
+	end
+
+	def self.new_with_yaml(endpoint)
+		uri = URI.parse(endpoint + 'rpaproxy.yaml')
+		raise StandardError.new("エンドポイントのURLが不正です。: #{endpoint}") if uri.scheme != 'http'
+		res = Net::HTTP.start(uri.host, uri.port) {|http|
+			http.get(uri.path, {'User-Agent' => 'rpaproxy/0.01'})
+		}
+		yaml = YAML.load(res.body)
+		['name', 'locales'].each do |key|
+			raise StandardError.new("Cannot read #{key} from #{uri}") unless yaml[key]
+		end
+		# TODO: localesの国別チェック
+		new(endpoint: endpoint, name: yaml['name'], locales: yaml['locales'])
+	end
 
 	def fetch(locale, query_string)
 		uri = URI.parse("#{endpoint}#{locale}/")
@@ -37,22 +52,6 @@ class Proxy
 		end
 		inc(:success, 1)
 		res
-	end
-
-	def parse_yaml
-		self.endpoint = endpoint.sub(/\/$/, '') + '/'
-		uri = URI.parse(endpoint + 'rpaproxy.yaml')
-		raise StandardError.new("エンドポイントのURLが不正です。: #{endpoint}") if uri.scheme != 'http'
-		res = Net::HTTP.start(uri.host, uri.port) {|http|
-			http.get(uri.path, {'User-Agent' => 'rpaproxy/0.01'})
-		}
-		yaml = YAML.load(res.body)
-		['name', 'locales'].each do |key|
-			raise StandardError.new("Cannot read #{key} from #{uri}") unless yaml[key]
-		end
-		# TODO: localesの国別チェック
-		self.name ||= yaml['name']
-		self.locales = yaml['locales']
 	end
 
 	def valid_endpoint?
@@ -76,6 +75,7 @@ class Proxy
 		keys = URI.parse(res['location']).query.split('&').map{|k| k.split('=')[0]}
 		# パラメタ内にあるAWSAccessKeyIdもしくはSubscriptionIdは、自身のアクセスキーに変更
 		unless keys.include?('AWSAccessKeyId') || keys.include?('SubscriptionId')
+			# TODO: errorsにエラーの理由を含める
 			return false
 		end
 		# Timestampはパラメタにあっても無視し、現在時刻で付け直す
