@@ -22,7 +22,10 @@ set :protection, except: :session_hijacking
 
 # TODO: DB接続設定を外部ファイルへ移動する
 configure :test do
-	Mongo::Connection.new('localhost').db('myapp')
+	Mongoid.configure do |config|
+		conn = Mongo::Connection.new
+		config.master = conn.db('test')
+	end
 end
 
 configure :development, :production do
@@ -33,7 +36,7 @@ configure :development, :production do
 			config.master = conn.db(uri.path.gsub(/^\//, ''))
 		else
 			conn = Mongo::Connection.new
-			config.master = conn.db('test')
+			config.master = conn.db('rpaproxy')
 		end
 	end
 end
