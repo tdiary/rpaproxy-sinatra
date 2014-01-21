@@ -19,6 +19,8 @@ GEM
     database_cleaner (1.2.0)
     diff-lcs (1.2.5)
     eventmachine (1.0.3)
+    factory_girl (4.3.0)
+      activesupport (>= 3.0.0)
     haml (4.0.4)
       tilt
     hashie (2.0.5)
@@ -82,6 +84,7 @@ PLATFORMS
 DEPENDENCIES
   bson_ext
   database_cleaner
+  factory_girl (~> 4.0)
   haml
   mongoid (~> 2.2)
   newrelic_rpm

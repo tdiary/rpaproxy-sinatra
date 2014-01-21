@@ -18,6 +18,7 @@ group :test do
 	gem "rspec"
 	gem "rack-test"
 	gem "webmock"
+	gem "factory_girl", "~> 4.0"
 	gem "database_cleaner"
 	gem "pry"
 end
