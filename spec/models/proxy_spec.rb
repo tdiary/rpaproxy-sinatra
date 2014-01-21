@@ -5,14 +5,19 @@ ENDPOINT = 'http://proxy.example.com/endpoint/'
 describe Proxy do
 	before do
 		@proxy = Proxy.new(endpoint: ENDPOINT, locales: ['jp', 'en'])
+
+		stub_request(:get, "#{ENDPOINT}rpaproxy.yaml")
+			.to_return(status: 200, body: File.new('spec/fixtures/rpaproxy.yaml'))
+
+		stub_request(:get, "#{ENDPOINT}jp/?key=value")
+			.to_return(status: 302, headers: { Location: 'http://res.example.com' })
+
+		stub_request(:any, "#{ENDPOINT}jp/")
+			.with(query: hash_including({AssociateTag: 'sample-22'}))
+			.to_return(status: 302, headers: { Location: 'http://webservices.amazon.co.jp/onca/xml?AssociateTag=sample-22&ItemPage=1&Keywords=Amazon&Operation=ItemSearch&ResponseGroup=Small&SearchIndex=Books&Service=AWSECommerceService&SubscriptionId=AKIAJMISDK2FBSFI3HAQ&Timestamp=2014-01-18T14%3A18%3A21Z&Version=2007-10-29&Signature=wwqaq0qp77Xun%2BcXHgnMpRtIewohTQPpatN8mUwdv1k%3D' })
 	end
 
 	describe '#fetch' do
-		before {
-			stub_request(:get, "#{ENDPOINT}jp/?key=value")
-				.to_return(status: 302, headers: { Location: 'http://res.example.com' })
-		}
-
 		subject { @proxy.fetch('jp', 'key=value') }
 
 		it 'should fetch proxy' do
@@ -43,33 +48,17 @@ describe Proxy do
 	end
 
 	describe '#parse_yaml' do
-		before do
-			stub_request(:get, "#{ENDPOINT}rpaproxy.yaml")
-				.to_return(status: 200, body: File.new('spec/fixtures/rpaproxy.yaml'))
-			@proxy.parse_yaml
-		end
-
+		before { @proxy.parse_yaml }
 		subject { @proxy }
 
-		it 'should set the name and locales from a YAML file on the endpoint' do
-			expect(subject.name).to eq 'Amazon認証プロキシ'
-			expect(subject.locales).to eq ["jp", "us", "ca", "de", "fr", "uk"]
-		end
+		it { expect(subject.name).to eq 'Amazon認証プロキシ' }
+		it { expect(subject.locales).to eq ["jp", "us", "ca", "de", "fr", "uk"] }
 	end
 
 	describe '#valid_endpoint?' do
-		before do
-		end
-
 		subject { @proxy.valid_endpoint? }
 
-		it 'should return true' do
-			stub_request(:any, "#{ENDPOINT}jp/")
-				.with(query: hash_including({AssociateTag: 'sample-22'}))
-				.to_return(status: 302, headers: { Location: 'http://webservices.amazon.co.jp/onca/xml?AssociateTag=sample-22&ItemPage=1&Keywords=Amazon&Operation=ItemSearch&ResponseGroup=Small&SearchIndex=Books&Service=AWSECommerceService&SubscriptionId=AKIAJMISDK2FBSFI3HAQ&Timestamp=2014-01-18T14%3A18%3A21Z&Version=2007-10-29&Signature=wwqaq0qp77Xun%2BcXHgnMpRtIewohTQPpatN8mUwdv1k%3D' })
-	
-			expect(subject).to eq true
-		end
+		it { expect(subject).to eq true }
 
 		context 'response does not include an SubscriptionId and AWSAccessKeyId' do
 			it 'should return false' do
