@@ -175,23 +175,18 @@ get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 	proxies.concat(proxies.slice!(0, rand(proxies.length)))
 	res = nil
 	proxies.each do |proxy|
-		begin
-			start_time = Time.now
-			res = proxy.fetch(locale, request.query_string)
-			Log.create(
-				atag: params['AssociateTag'],
-				locale: locale,
-				created_at: Time.now,
-				response: Time.now - start_time,
-				proxy: proxy,
-				success: true)
-			break
-		rescue => e
-			STDERR.puts "Error: #{e.class}, #{e.message}"
-			STDERR.puts "failure for #{proxy.endpoint}"
-		end
+		start_time = Time.now
+		res = proxy.fetch(locale, request.query_string)
+		next unless res
+		Log.create(
+			atag: params['AssociateTag'],
+			locale: locale,
+			created_at: Time.now,
+			response: Time.now - start_time,
+			proxy: proxy,
+			success: true)
 	end
-	unless res.kind_of? Net::HTTPFound
+	unless res
 		# TODO: トータルの失敗回数を増分
 		Log.create(
 			atag: params['AssociateTag'],

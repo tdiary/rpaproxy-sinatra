@@ -23,12 +23,17 @@ class Proxy
 
 	def fetch(locale, query_string)
 		uri = URI.parse("#{endpoint}#{locale}/")
-		res = Net::HTTP.start(uri.host, uri.port) {|http|
-			http.get("#{uri.path}?#{query_string}", {'User-Agent' => 'rpaproxy/0.01'})
-		}
-		unless res.kind_of? Net::HTTPFound
+		begin
+			res = Net::HTTP.start(uri.host, uri.port) {|http|
+				http.get("#{uri.path}?#{query_string}", {'User-Agent' => 'rpaproxy/0.01'})
+			}
+			unless res.kind_of? Net::HTTPFound
+				inc(:failure, 1)
+				return nil
+			end
+		rescue => e
 			inc(:failure, 1)
-			raise StandardError.new("unexcepted response: #{res.code}")
+			return nil
 		end
 		inc(:success, 1)
 		res
@@ -66,12 +71,8 @@ class Proxy
 			ItemPage: '1',
 			Timestamp: '2009-01-02T03:04:05Z'
 		}.map{|k,v| "#{k}=#{v}"}.join("&")
-		begin
-			res = fetch(locales[0], query)
-		rescue StandardError => e
-			STDERR.puts "#{e.class}: #{e.message}"
-			return false
-		end
+		res = fetch(locales[0], query)
+		return false unless res
 		keys = URI.parse(res['location']).query.split('&').map{|k| k.split('=')[0]}
 		# パラメタ内にあるAWSAccessKeyIdもしくはSubscriptionIdは、自身のアクセスキーに変更
 		unless keys.include?('AWSAccessKeyId') || keys.include?('SubscriptionId')

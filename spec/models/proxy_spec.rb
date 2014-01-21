@@ -6,15 +6,12 @@ ILLIGAL_PROXY_ENDPOINT = 'http://illigal.example.com/endpoint/'
 describe Proxy do
 	before do
 		@proxy = Proxy.new(endpoint: PROXY_ENDPOINT, locales: ['jp', 'en'])
-		@illigal_proxy = Proxy.new(endpoint: ILLIGAL_PROXY_ENDPOINT)
 	end
 
 	describe '#fetch' do
 		before do
 			stub_request(:get, "#{PROXY_ENDPOINT}jp/?test=aaa")
 				.to_return(status: 302, headers: { Location: 'http://www.example.com' })
-			stub_request(:get, "#{ILLIGAL_PROXY_ENDPOINT}jp/?test=aaa")
-				.to_return(status: 200)
 		end
 
 		subject { @proxy.fetch('jp', 'test=aaa') }
@@ -32,10 +29,20 @@ describe Proxy do
 
 		it { expect{ subject }.to change{ @proxy.success }.from(0).to(1) }
 
-		context 'endpointが302以外のステータスコードを返す場合' do
-			subject { @illigal_proxy.fetch('jp', 'test=aaa') }
-			it { expect { subject }.to raise_error(StandardError) }
-			# it { expect{ subject }.to change{ @proxy.failure }.from(0).to(1) }
+		context "when an endpoint doesn't return 302" do
+			before { stub_request(:get, "#{PROXY_ENDPOINT}jp/?test=404").to_return(status: 404) }
+			subject { @proxy.fetch('jp', 'test=404') }
+
+			it { expect(subject).to be_nil }
+			it { expect{ subject }.to change{ @proxy.failure }.from(0).to(1) }
+		end
+
+		context "when timeout" do
+			before { stub_request(:get, "#{PROXY_ENDPOINT}jp/?test=timeout").to_timeout }
+			subject { @proxy.fetch('jp', 'test=timeout') }
+
+			it { expect(subject).to be_nil }
+			it { expect{ subject }.to change{ @proxy.failure }.from(0).to(1) }
 		end
 	end
 
