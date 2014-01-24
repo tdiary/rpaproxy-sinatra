@@ -18,8 +18,9 @@ class Proxy
 	validates_presence_of :endpoint, :name, :locales
 	validates_uniqueness_of :endpoint
 
-	def self.fetch(locale, query_string)
-		where(locales: locale).asc('_id').only(:endpoint).to_a
+	def self.random(locale)
+		r = where(locales: locale).asc('_id').only(:endpoint).to_a
+		r.concat(r.slice!(0, rand(r.length)))
 	end
 
 	def self.new_with_yaml(endpoint)
@@ -86,4 +87,3 @@ class Proxy
 		true
 	end
 end
-

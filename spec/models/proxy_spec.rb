@@ -25,6 +25,18 @@ describe Proxy do
 		it { expect(subject.locales).to eq ["jp", "us", "ca", "de", "fr", "uk"] }
 	end
 
+	describe '.random' do
+		before { [:proxy1, :proxy2, :proxy3, :proxy4].each{|name| create(name) } }
+		subject { Proxy.random('jp') }
+
+		it { expect(subject).to be_a_kind_of(Array) }
+		it { expect(subject.size).to eq 3 }
+		it "should randomize" do
+			proxies = 10.times.map { Proxy.random('jp').first }.uniq
+			expect(proxies.size).to eq 3
+		end
+	end
+
 	describe '#fetch' do
 		subject { @proxy.fetch('jp', 'key=value') }
 
