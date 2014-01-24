@@ -6,7 +6,7 @@ gem "rake"
 gem 'sinatra'
 gem "thin"
 
-gem "mongoid", '~> 2.2'
+gem "mongoid", "~> 3.1"
 gem "bson_ext"
 
 gem "omniauth"
