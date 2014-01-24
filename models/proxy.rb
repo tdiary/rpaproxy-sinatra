@@ -13,7 +13,7 @@ class Proxy
 	field :failure, type: Integer, default: 0
 
 	belongs_to :user
-	index :locales
+	index({ locales: 1 })
 
 	validates_presence_of :endpoint, :name, :locales
 	validates_uniqueness_of :endpoint
