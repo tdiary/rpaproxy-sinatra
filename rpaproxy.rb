@@ -182,14 +182,16 @@ get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 	proxies.each do |proxy|
 		start_time = Time.now
 		res = proxy.fetch(locale, request.query_string)
-		next unless res
-		Log.create(
-			atag: params['AssociateTag'],
-			locale: locale,
-			created_at: Time.now,
-			response: Time.now - start_time,
-			proxy: proxy,
-			success: true)
+		if res
+			Log.create(
+				atag: params['AssociateTag'],
+				locale: locale,
+				created_at: Time.now,
+				response: Time.now - start_time,
+				proxy: proxy,
+				success: true)
+			break
+		end
 	end
 	unless res
 		# TODO: トータルの失敗回数を増分
