@@ -20,25 +20,8 @@ end
 set :haml, { format: :html5, escape_html: true }
 set :protection, except: :session_hijacking
 
-# TODO: DB接続設定を外部ファイルへ移動する
-configure :test do
-	Mongoid.configure do |config|
-		conn = Mongo::Connection.new
-		config.master = conn.db('test')
-	end
-end
-
-configure :development, :production do
-	Mongoid.configure do |config|
-		if mongo_uri = (ENV['MONGOHQ_URL'] || ENV['MONGOLAB_URI'])
-			uri  = URI.parse(mongo_uri)
-			conn = Mongo::Connection.from_uri(mongo_uri)
-			config.master = conn.db(uri.path.gsub(/^\//, ''))
-		else
-			conn = Mongo::Connection.new
-			config.master = conn.db('rpaproxy')
-		end
-	end
+configure do
+	Mongoid.load!("config/mongoid.yml")
 end
 
 configure :production do

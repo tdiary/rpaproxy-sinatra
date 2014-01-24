@@ -12,7 +12,7 @@ class User
 
 	validates_presence_of :uid, :name, :screen_name
 	validates_uniqueness_of :uid
-	index :uid, unique: true
+	index({ uid: 1 }, { unique: true })
 
 	# TODO: URIにはhttp/httpsスキームのみ登録可能とする
 
