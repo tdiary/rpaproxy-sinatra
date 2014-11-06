@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.0.0'
+ruby '2.1.4'
 
 gem "rake"
 gem 'sinatra'
@@ -15,7 +15,7 @@ gem "omniauth-twitter"
 gem "haml"
 
 group :test do
-	gem "rspec"
+	gem "rspec", '~> 2.14.1'
 	gem "rack-test"
 	gem "webmock"
 	gem "factory_girl", "~> 4.0"
