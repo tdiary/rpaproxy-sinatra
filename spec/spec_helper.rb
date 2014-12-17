@@ -17,11 +17,11 @@ DatabaseCleaner[:mongoid, {:connection => :test}]
 RSpec.configure do |c|
   c.include Rack::Test::Methods
   c.include FactoryGirl::Syntax::Methods
-	c.before :each do
-		DatabaseCleaner.strategy = :truncation
-		DatabaseCleaner.start
+  c.before :each do
+    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.start
   end
-	c.after do
-		DatabaseCleaner.clean
+  c.after do
+    DatabaseCleaner.clean
   end
 end
