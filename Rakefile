@@ -8,6 +8,7 @@ unless ENV['RACK_ENV'] == 'production'
 
   desc "Run all specs in spec directory"
   RSpec::Core::RakeTask.new(:spec) do |t|
+    ENV['RACK_ENV'] = 'test'
     t.pattern = "spec/**/*_spec.rb"
   end
 end
