@@ -15,7 +15,7 @@ gem "omniauth-twitter"
 gem "haml"
 
 group :test do
-	gem "rspec", '~> 2.14.1'
+	gem "rspec"
 	gem "rack-test"
 	gem "webmock"
 	gem "factory_girl", "~> 4.0"

@@ -41,7 +41,7 @@ describe 'rpaproxy' do
 		describe "logging" do
 			subject { Log.last }
 
-			it { expect(subject.success).to be_true }
+			it { expect(subject.success).to be true }
 			it { expect(subject.proxy).to be_kind_of Proxy }
 			it { expect(subject.proxy.locales).to include('jp') }
 		end
@@ -61,7 +61,7 @@ describe 'rpaproxy' do
 			describe "logging" do
 				subject { Log.last }
 
-				it { expect(subject.success).to be_false }
+				it { expect(subject.success).to be false }
 			end
 		end
 	end
