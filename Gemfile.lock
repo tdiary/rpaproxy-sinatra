@@ -33,6 +33,9 @@ GEM
       tzinfo (~> 0.3.29)
     moped (1.5.2)
     multi_json (1.10.1)
+    newrelic_moped (0.0.11)
+      moped
+      newrelic_rpm (~> 3.0, >= 3.7)
     newrelic_rpm (3.9.8.273)
     oauth (0.4.7)
     omniauth (1.2.2)
@@ -92,6 +95,7 @@ DEPENDENCIES
   factory_girl (~> 4.0)
   haml
   mongoid (~> 3.1)
+  newrelic_moped
   newrelic_rpm
   omniauth
   omniauth-twitter
