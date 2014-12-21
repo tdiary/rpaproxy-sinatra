@@ -14,6 +14,8 @@ gem "omniauth-twitter"
 
 gem "haml"
 
+gem 'dalli'
+
 group :test do
 	gem "rspec"
 	gem "rack-test"
