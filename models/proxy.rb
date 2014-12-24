@@ -44,14 +44,14 @@ class Proxy
 				http.get("#{uri.path}?#{query_string}", {'User-Agent' => 'rpaproxy/0.01'})
 			}
 			unless res.kind_of? Net::HTTPFound
-				inc(:failure, 1)
+				inc(failure: 1)
 				return nil
 			end
 		rescue => e
-			inc(:failure, 1)
+			inc(failure: 1)
 			return nil
 		end
-		inc(:success, 1)
+		inc(success: 1)
 		res
 	end
 
