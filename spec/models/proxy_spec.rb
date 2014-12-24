@@ -42,7 +42,7 @@ describe Proxy do
 
 		it 'should fetch proxy' do
 			subject
-			WebMock.should have_requested(:get, "#{ENDPOINT}jp/")
+			expect(WebMock).to have_requested(:get, "#{ENDPOINT}jp/")
 				.with(query: {key: 'value'})
 		end
 
