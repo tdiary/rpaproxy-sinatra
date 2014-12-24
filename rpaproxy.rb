@@ -26,6 +26,7 @@ end
 
 configure :production do
 	require 'newrelic_rpm'
+	require 'newrelic_moped'
 	raise StandardError.new("not found ENV['TWITTER_KEY']") unless ENV['TWITTER_KEY']
 	raise StandardError.new("not found ENV['TWITTER_SECRET']") unless ENV['TWITTER_SECRET']
 end
