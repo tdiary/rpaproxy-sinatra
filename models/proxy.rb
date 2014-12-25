@@ -19,7 +19,7 @@ class Proxy
 	validates_uniqueness_of :endpoint
 
 	def self.random(locale)
-		r = where(locales: locale).asc('_id').only(:endpoint).to_a
+		r = where(locales: locale).asc('_id').only(:endpoint, :_id).to_a
 		r.concat(r.slice!(0, rand(r.length)))
 	end
 
@@ -44,14 +44,14 @@ class Proxy
 				http.get("#{uri.path}?#{query_string}", {'User-Agent' => 'rpaproxy/0.01'})
 			}
 			unless res.kind_of? Net::HTTPFound
-				inc(:failure, 1)
+				inc(failure: 1)
 				return nil
 			end
 		rescue => e
-			inc(:failure, 1)
+			inc(failure: 1)
 			return nil
 		end
-		inc(:success, 1)
+		inc(success: 1)
 		res
 	end
 
