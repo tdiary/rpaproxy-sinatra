@@ -19,7 +19,7 @@ class Proxy
 	validates_uniqueness_of :endpoint
 
 	def self.random(locale)
-		r = where(locales: locale).asc('_id').only(:endpoint, :_id).to_a
+		r = where(locales: locale).asc('_id').only(:endpoint).to_a
 		r.concat(r.slice!(0, rand(r.length)))
 	end
 
