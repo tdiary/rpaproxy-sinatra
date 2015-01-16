@@ -28,7 +28,7 @@ describe 'rpaproxy' do
 	# TODO: http://sho.tdiary.net/20090706.html#p01 の仕様を満たしていることをチェック
 	it "says hello" do
 		get '/'
-		last_response.should be_ok
+		expect(last_response).to be_ok
 	end
 
 	describe "/rpaproxy/jp/" do
