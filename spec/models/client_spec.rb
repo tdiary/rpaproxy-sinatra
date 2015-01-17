@@ -9,7 +9,7 @@ describe Client do
 			atag: @atag,
 			status: Client::Status::SUSPENDED,
 			suspended_at: Time.now,
-			suspended_times: 5
+			suspended_times: 1
 		)
 	end
 
@@ -76,7 +76,7 @@ describe Client do
 
 				describe '#suspended_times' do
 					subject { @suspended_client.suspended_times }
-					it { expect(subject).to eq 0 }
+					it { expect(subject).to eq 1 }
 				end
 			end
 		end

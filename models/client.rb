@@ -40,17 +40,17 @@ class Client
 				end
 			end
 		when Status::SUSPENDED
-			unless in_suspend_duration?
-				self.status = Status::ACTIVE
-				self.suspended_at = nil
-				self.suspended_times = 0
-			end
+			self.status = Status::ACTIVE unless in_suspend_duration?
 		end
 	end
 
-	def rate_limit_exceed?
+	def rate
 		one_minute_ago = Time.now - 60
-		Log.where(:created_at.gte => one_minute_ago).in(atag: atag).count > RATE_LIMIT
+		Log.where(:created_at.gte => one_minute_ago).in(atag: atag).count
+	end
+
+	def rate_limit_exceed?
+		rate > RATE_LIMIT
 	end
 
 	def in_suspend_duration?
@@ -59,5 +59,9 @@ class Client
 
 		one_hour_ago = Time.now - 3600
 		suspended_at > one_hour_ago
+	end
+
+	def to_s
+		"#{atag}: #{status}: #{suspended_times}: #{suspended_at}: #{rate}/#{RATE_LIMIT}"
 	end
 end
