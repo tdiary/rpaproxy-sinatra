@@ -39,6 +39,18 @@ helpers do
 	def locales
 		['jp', 'us', 'ca', 'de', 'fr', 'uk', 'es', 'it', 'cn']
 	end
+
+	def forbidden?
+		client = Client.find_or_initialize_by(atag: params['AssociateTag'])
+		client.update_status
+		if client.status == Client::Status::ACTIVE
+			client.save if client.changed? and client.created_at
+			false
+		else
+			client.save if client.changed?
+			true
+		end
+	end
 end
 
 before do
@@ -154,11 +166,8 @@ end
 
 # リバースプロキシ http://rpaproxy.heroku.com/rpaproxy/jp/
 get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
-	if ENV['IGNORE_ASSOCIATE_TAGS']
-		if ENV['IGNORE_ASSOCIATE_TAGS'].split(',').include?(params['AssociateTag'])
-			halt 403, "403 forbidden: access is denied"
-		end
-	end
+	# deny bot
+	halt 403, "403 forbidden: access is denied" if forbidden?
 	# FIXME: 全件取得しているのを最適化したい
 	proxies = Proxy.random(locale)
 	res = nil
