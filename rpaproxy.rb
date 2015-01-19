@@ -10,6 +10,7 @@ require './models/user.rb'
 require './models/proxy.rb'
 require './models/log.rb'
 require './models/stat.rb'
+require './models/client.rb'
 
 enable :sessions
 use OmniAuth::Builder do
