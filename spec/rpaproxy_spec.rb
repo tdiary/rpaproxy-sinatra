@@ -8,18 +8,18 @@ describe 'rpaproxy' do
 
 	before {
 		proxy1 = create(:proxy1)
-		stub_request(:get, "#{proxy1.endpoint}jp/?key=value")
+		stub_request(:get, "#{proxy1.endpoint}jp/?AssociateTag=sample-22")
 			.to_return(status: 500)
 		proxy2 = create(:proxy2)
-		stub_request(:get, "#{proxy2.endpoint}jp/?key=value")
+		stub_request(:get, "#{proxy2.endpoint}jp/?AssociateTag=sample-22")
 			.to_return(status: 302, headers: { Location: 'http://res2.example.com' })
 		proxy3 = create(:proxy3)
-		stub_request(:get, "#{proxy3.endpoint}jp/?key=value")
+		stub_request(:get, "#{proxy3.endpoint}jp/?AssociateTag=sample-22")
 			.to_return(status: 302, headers: { Location: 'http://res3.example.com' })
-		stub_request(:get, "#{proxy3.endpoint}en/?key=value")
+		stub_request(:get, "#{proxy3.endpoint}en/?AssociateTag=sample-22")
 			.to_return(status: 302, headers: { Location: 'http://res4.example.com' })
 		proxy4 = create(:proxy4)
-		stub_request(:get, "#{proxy4.endpoint}en/?key=value")
+		stub_request(:get, "#{proxy4.endpoint}en/?AssociateTag=sample-22")
 			.to_return(status: 302, headers: { Location: 'http://res4.example.com' })
 
 		Log.delete_all
@@ -32,7 +32,7 @@ describe 'rpaproxy' do
 	end
 
 	describe "/rpaproxy/jp/" do
-		before { get '/rpaproxy/jp/', {key: 'value'} }
+		before { get '/rpaproxy/jp/', {AssociateTag: 'sample-22'} }
 		subject { last_response }
 
 		it { expect(subject.status).to eq 302 }
@@ -51,7 +51,7 @@ describe 'rpaproxy' do
 				Proxy.delete_all
 				create(:proxy1)
 
-				get '/rpaproxy/jp/', {key: 'value'}
+				get '/rpaproxy/jp/', {AssociateTag: 'sample-22'}
 			}
 			subject { last_response }
 
@@ -64,10 +64,45 @@ describe 'rpaproxy' do
 				it { expect(subject.success).to be false }
 			end
 		end
+
+		context "when attacked by bot" do
+			before do
+				50.times { get '/rpaproxy/jp/', {AssociateTag: 'sample-22'} }
+			end
+			subject { last_response }
+
+			it { expect(subject.status).to eq 403 }
+
+			context "and 1 hour later" do
+				before do
+					one_hour_later = Time.now + 3600
+					allow(Time).to receive_message_chain(:now).and_return(one_hour_later)
+					get '/rpaproxy/jp/', {AssociateTag: 'sample-22'}
+				end
+				subject { last_response }
+
+				it { expect(subject.status).to eq 302 }
+			end
+
+			context "with 5 times attacking and ban" do
+				before do
+					one_hour_later = Time.now + 3600
+					5.times {
+						50.times { get '/rpaproxy/jp/', {AssociateTag: 'sample-22'} }
+						allow(Time).to receive_message_chain(:now).and_return(one_hour_later)
+						# puts "#{Time.now}: #{last_response.status}: #{Client.where(atag: 'sample-22').first}"
+					}
+					get '/rpaproxy/jp/', {AssociateTag: 'sample-22'}
+				end
+				subject { last_response }
+
+				it { expect(subject.status).to eq 403 }
+			end
+		end
 	end
 
 	describe "/rpaproxy/en/" do
-		before { get '/rpaproxy/en/', {key: 'value'} }
+		before { get '/rpaproxy/en/', {AssociateTag: 'sample-22'} }
 		subject { Log.last }
 
 		it { expect(subject.proxy.locales).to include('en') }

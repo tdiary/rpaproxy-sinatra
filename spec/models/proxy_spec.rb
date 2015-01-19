@@ -32,7 +32,7 @@ describe Proxy do
 		it { expect(subject).to be_a_kind_of(Array) }
 		it { expect(subject.size).to eq 3 }
 		it "should randomize" do
-			proxies = 10.times.map { Proxy.random('jp').first }.uniq
+			proxies = 100.times.map { Proxy.random('jp').first }.uniq
 			expect(proxies.size).to eq 3
 		end
 	end
