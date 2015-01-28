@@ -4,7 +4,7 @@ ruby '2.1.5'
 
 gem "rake"
 gem 'sinatra'
-gem "thin"
+gem "puma"
 
 gem "mongoid"
 gem "bson_ext"
