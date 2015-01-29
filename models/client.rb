@@ -22,7 +22,7 @@ class Client
 	validates_uniqueness_of :atag
 
 	RATE_LIMIT = 30           # request per minutes
-	SUSPENDED_LIMIT = 5       # suspended times to banned
+	SUSPENDED_LIMIT = 50      # suspended times to banned
 	SUSPENDED_DURATION = 3600 # 1hour
 
 	# after_initialize :update_status

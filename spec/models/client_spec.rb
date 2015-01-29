@@ -39,7 +39,7 @@ describe Client do
 				end
 			end
 
-			context 'when rate_limit has exceeded 5 times' do
+			context 'when rate_limit has exceeded 50 times' do
 				before do
 					31.times { Log.create(atag: @atag, created_at: Time.now) }
 					@active_client.suspended_times = Client::SUSPENDED_LIMIT - 1
