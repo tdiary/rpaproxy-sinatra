@@ -18,6 +18,7 @@ GEM
     connection_pool (2.1.0)
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
+    dalli (2.7.2)
     database_cleaner (1.3.0)
     diff-lcs (1.2.5)
     factory_girl (4.5.0)
@@ -98,6 +99,7 @@ PLATFORMS
 
 DEPENDENCIES
   bson_ext
+  dalli
   database_cleaner
   factory_girl (~> 4.0)
   haml
