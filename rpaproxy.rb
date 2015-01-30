@@ -14,7 +14,7 @@ require './models/client.rb'
 
 if production?
 	require 'rack/session/dalli'
-	use Rack::Session::Dalli
+	use Rack::Session::Dalli, cache: Dalli::Client.new, expire_after: 2592000
 else
 	use Rack::Session::Pool, expire_after: 2592000
 end
