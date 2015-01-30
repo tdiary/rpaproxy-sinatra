@@ -12,14 +12,19 @@ require './models/log.rb'
 require './models/stat.rb'
 require './models/client.rb'
 
-enable :sessions
+if production?
+	require 'rack/session/dalli'
+	use Rack::Session::Dalli, cache: Dalli::Client.new, expire_after: 2592000
+else
+	use Rack::Session::Pool, expire_after: 2592000
+end
+
 use OmniAuth::Builder do
 	provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
 	provider :developer unless production?
 end
 
 set :haml, { format: :html5, escape_html: true }
-set :protection, except: :session_hijacking
 
 configure do
 	Mongoid.load!("config/mongoid.yml")
