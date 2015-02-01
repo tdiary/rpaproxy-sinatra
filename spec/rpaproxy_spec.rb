@@ -24,6 +24,8 @@ describe 'rpaproxy' do
 			.to_return(status: 302, headers: { Location: 'http://res3.example.com/?Service=AWSECommerceService&AssociateTag=sample-22' })
 		stub_request(:get, "#{proxy3.endpoint}jp/?Service=AWSECommerceService")
 			.to_return(status: 302, headers: { Location: 'http://res3.example.com/?Service=AWSECommerceService&AssociateTag=proxy3' })
+		stub_request(:get, "#{proxy3.endpoint}en/?Service=AWSECommerceService&AssociateTag=sample-22")
+			.to_return(status: 302, headers: { Location: 'http://res3.example.com/?Service=AWSECommerceService&AssociateTag=sample-22' })
 
 		proxy4 = create(:proxy4)
 		stub_request(:get, "#{proxy4.endpoint}en/?Service=AWSECommerceService&AssociateTag=sample-22")
@@ -45,7 +47,7 @@ describe 'rpaproxy' do
 		subject { last_response }
 
 		it { expect(subject.status).to eq 302 }
-		it { expect(subject.headers.keys).to include('Location') }
+		it { expect(subject.header['Location']).to include 'sample-22' }
 
 		describe "logging" do
 			subject { Log.last }
@@ -74,16 +76,16 @@ describe 'rpaproxy' do
 			end
 		end
 
-		context "when attacked by bot" do
+		context "when attacked by bot (status: suspended)" do
 			before do
 				50.times { get '/rpaproxy/jp/', {Service: 'AWSECommerceService', AssociateTag: 'sample-22'} }
 			end
 			subject { last_response }
 
 			it { expect(subject.status).to eq 302 }
-			it { expect(last_request.params).not_to include 'AssociateTag' }
+			it { expect(subject.header['Location']).not_to include 'sample-22' }
 
-			context "and 1 hour later" do
+			context "and 1 hour later (status: active)" do
 				before do
 					one_hour_later = Time.now + 3600
 					allow(Time).to receive_message_chain(:now).and_return(one_hour_later)
@@ -92,9 +94,10 @@ describe 'rpaproxy' do
 				subject { last_response }
 
 				it { expect(subject.status).to eq 302 }
+				it { expect(subject.header['Location']).to include 'sample-22' }
 			end
 
-			context "with 5 times attacking and ban" do
+			context "with 5 times attacking and ban (status: banned)" do
 				before do
 					one_hour_later = Time.now + 3600
 					5.times {
@@ -107,7 +110,7 @@ describe 'rpaproxy' do
 				subject { last_response }
 
 				it { expect(subject.status).to eq 302 }
-				it { expect(last_request.params).not_to include 'AssociateTag' }
+				it { expect(subject.header['Location']).not_to include 'sample-22' }
 			end
 		end
 	end
