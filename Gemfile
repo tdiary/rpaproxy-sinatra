@@ -25,6 +25,7 @@ end
 
 group :production do
 	gem 'dalli'
+	gem 'memcachier'
 	gem 'newrelic_rpm'
 	gem 'newrelic_moped'
 end

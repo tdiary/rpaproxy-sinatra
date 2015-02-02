@@ -28,6 +28,7 @@ GEM
     hashie (3.3.2)
     i18n (0.7.0)
     json (1.8.1)
+    memcachier (0.0.2)
     method_source (0.8.2)
     minitest (5.5.0)
     mongoid (4.0.0)
@@ -103,6 +104,7 @@ DEPENDENCIES
   database_cleaner
   factory_girl (~> 4.0)
   haml
+  memcachier
   mongoid
   newrelic_moped
   newrelic_rpm
