@@ -173,7 +173,9 @@ end
 # リバースプロキシ http://rpaproxy.heroku.com/rpaproxy/jp/
 get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
 	# deny bot
-	halt 403, "403 forbidden: access is denied" if forbidden?
+	if forbidden?
+		env['QUERY_STRING'] = request.params.reject{|k,v| k == 'AssociateTag' }.to_query
+	end
 	# FIXME: 全件取得しているのを最適化したい
 	proxies = Proxy.random(locale)
 	res = nil
