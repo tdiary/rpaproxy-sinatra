@@ -11,4 +11,5 @@ class Log
 	field :response, type: Float
 
 	belongs_to :proxy
+	index({ created_at: 1 })
 end
