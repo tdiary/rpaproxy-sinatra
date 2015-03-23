@@ -4,7 +4,7 @@ ruby '2.1.5'
 
 gem "rake"
 gem 'sinatra'
-gem "thin"
+gem "puma"
 
 gem "mongoid"
 gem "bson_ext"
@@ -24,6 +24,8 @@ group :test do
 end
 
 group :production do
+	gem 'dalli'
+	gem 'memcachier'
 	gem 'newrelic_rpm'
 	gem 'newrelic_moped'
 end

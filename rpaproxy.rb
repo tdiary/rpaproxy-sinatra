@@ -10,15 +10,21 @@ require './models/user.rb'
 require './models/proxy.rb'
 require './models/log.rb'
 require './models/stat.rb'
+require './models/client.rb'
 
-enable :sessions
+if production?
+	require 'rack/session/dalli'
+	use Rack::Session::Dalli, cache: Dalli::Client.new, expire_after: 2592000
+else
+	use Rack::Session::Pool, expire_after: 2592000
+end
+
 use OmniAuth::Builder do
 	provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
 	provider :developer unless production?
 end
 
 set :haml, { format: :html5, escape_html: true }
-set :protection, except: :session_hijacking
 
 configure do
 	Mongoid.load!("config/mongoid.yml")
@@ -38,6 +44,18 @@ helpers do
 
 	def locales
 		['jp', 'us', 'ca', 'de', 'fr', 'uk', 'es', 'it', 'cn']
+	end
+
+	def forbidden?
+		client = Client.find_or_initialize_by(atag: params['AssociateTag'])
+		client.update_status
+		if client.status == Client::Status::ACTIVE
+			client.save if client.changed? and client.created_at
+			false
+		else
+			client.save if client.changed?
+			true
+		end
 	end
 end
 
@@ -154,10 +172,9 @@ end
 
 # リバースプロキシ http://rpaproxy.heroku.com/rpaproxy/jp/
 get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
-	if ENV['IGNORE_ASSOCIATE_TAGS']
-		if ENV['IGNORE_ASSOCIATE_TAGS'].split(',').include?(params['AssociateTag'])
-			halt 403, "403 forbidden: access is denied"
-		end
+	# deny bot
+	if forbidden?
+		env['QUERY_STRING'] = request.params.reject{|k,v| k == 'AssociateTag' }.to_query
 	end
 	# FIXME: 全件取得しているのを最適化したい
 	proxies = Proxy.random(locale)
