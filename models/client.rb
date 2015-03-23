@@ -22,7 +22,6 @@ class Client
 	validates_uniqueness_of :atag
 
 	RATE_LIMIT = 30           # request per minutes
-	SUSPENDED_LIMIT = 50      # suspended times to banned
 	SUSPENDED_DURATION = 3600 # 1hour
 
 	# after_initialize :update_status
@@ -32,15 +31,13 @@ class Client
 		when Status::ACTIVE
 			if rate_limit_exceed?
 				self.suspended_times += 1
-				if suspended_times < SUSPENDED_LIMIT
-					self.status = Status::SUSPENDED
-					self.suspended_at = Time.now
-				else
-					self.status = Status::BANNED
-				end
+				self.status = Status::SUSPENDED
+				self.suspended_at = Time.now
 			end
 		when Status::SUSPENDED
 			self.status = Status::ACTIVE unless in_suspend_duration?
+		when Status::BANNED
+			self.status = Status::ACTIVE
 		end
 	end
 

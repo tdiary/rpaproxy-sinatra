@@ -96,22 +96,6 @@ describe 'rpaproxy' do
 				it { expect(subject.status).to eq 302 }
 				it { expect(subject.header['Location']).to include 'sample-22' }
 			end
-
-			context "with 5 times attacking and ban (status: banned)" do
-				before do
-					one_hour_later = Time.now + 3600
-					5.times {
-						50.times { get '/rpaproxy/jp/', {Service: 'AWSECommerceService', AssociateTag: 'sample-22'} }
-						allow(Time).to receive_message_chain(:now).and_return(one_hour_later)
-						# puts "#{Time.now}: #{last_response.status}: #{Client.where(atag: 'sample-22').first}"
-					}
-					get '/rpaproxy/jp/', {Service: 'AWSECommerceService', AssociateTag: 'sample-22'}
-				end
-				subject { last_response }
-
-				it { expect(subject.status).to eq 302 }
-				it { expect(subject.header['Location']).not_to include 'sample-22' }
-			end
 		end
 	end
 

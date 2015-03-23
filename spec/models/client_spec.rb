@@ -11,6 +11,10 @@ describe Client do
 			suspended_at: Time.now,
 			suspended_times: 1
 		)
+		@banned_client = Client.new(
+			atag: @atag,
+			status: Client::Status::BANNED,
+		)
 	end
 
 	after do
@@ -37,17 +41,6 @@ describe Client do
 					subject { @active_client.suspended_times }
 					it { expect(subject).to eq 1 }
 				end
-			end
-
-			context 'when rate_limit has exceeded 50 times' do
-				before do
-					31.times { Log.create(atag: @atag, created_at: Time.now) }
-					@active_client.suspended_times = Client::SUSPENDED_LIMIT - 1
-					@active_client.update_status
-				end
-
-				subject { @active_client }
-				it { expect(subject.status).to eq Client::Status::BANNED }
 			end
 
 			context 'with rate_limit exceeded logs at than 1 minute ago' do
@@ -79,6 +72,15 @@ describe Client do
 					it { expect(subject).to eq 1 }
 				end
 			end
+		end
+
+		context 'with banned' do
+			before do
+				@banned_client.update_status
+			end
+
+			subject { @banned_client }
+			it { expect(subject.status).to eq Client::Status::ACTIVE }
 		end
 	end
 end
