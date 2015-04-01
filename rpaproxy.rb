@@ -4,7 +4,7 @@ require 'sinatra'
 require 'mongoid'
 require 'omniauth'
 require 'omniauth-twitter'
-require 'haml'
+require 'hamlit'
 
 require './models/user.rb'
 require './models/proxy.rb'
