@@ -33,7 +33,7 @@ Start the reverse proxy app.
 $ docker run --rm -p 80:3000 --link mongodb1:mongodb tdiary/rpaproxy
 ```
 
-Then, access it via `http://localhost:80` in a browser.
+Then, access it via `http://localhost` in a browser.
 
 ## Running rpaproxy in development environment.
 
