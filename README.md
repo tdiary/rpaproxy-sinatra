@@ -4,7 +4,7 @@
 [![Code Climate](https://codeclimate.com/github/tdiary/rpaproxy-sinatra.png)](https://codeclimate.com/github/tdiary/rpaproxy-sinatra)
 [![Dependency Status](https://gemnasium.com/tdiary/rpaproxy-sinatra.png)](https://gemnasium.com/tdiary/rpaproxy-sinatra)
 
-## なにこれ？
+## What is it?
 
 Amazon Web ServicesのProduct Advertising API用の認証処理を代行するプロキシ(amazon-auth-proxy仕様準拠)の負荷分散を行うリバース・プロキシです。
 
@@ -12,14 +12,12 @@ Amazon Web ServicesのProduct Advertising API用の認証処理を代行する�
 
 # Install and running on Docker
 
-Build the docker image.
+The docker image is published on docker repositories.
 
-```
-$ git clone git@github.com:tdiary/rpaproxy-sinatra.git
-$ docker build -t tdiary/rpaproxy .
-```
+ * [hub.docker.com](https://registry.hub.docker.com/u/tdiary/rpaproxy-sinatra/)
+ * [quay.io](https://quay.io/repository/tdiary/rpaproxy-sinatra)
 
-## Running rpaproxy in development environment.
+## Running rpaproxy in a development environment.
 
 Start a mongodb container. This container is taken from official mongodb image.
 
@@ -30,16 +28,19 @@ $ docker run -d --name mongodb1 mongo
 Start the reverse proxy app.
 
 ```
-$ docker run --rm -p 80:3000 --link mongodb1:mongodb tdiary/rpaproxy
+$ docker run --rm -p 80:3000 --link mongodb1:mongodb tdiary/rpaproxy-sinatra
 ```
 
 Then, access it via `http://localhost` in a browser.
 
-## Running rpaproxy in development environment.
+## Running rpaproxy in a production environment.
 
-You can run rpaproxy with docker-compose simply.
+In a productino environment, this application requires memcached container to store session data. 
+
+You can run rpaproxy with docker-compose.
 
 ```
+$ curl -O https://raw.githubusercontent.com/tdiary/rpaproxy-sinatra/master/docker-compose.yml
 $ export TWITTER_KEY=your_twitter_key
 $ export TWITTER_SECRET=your_twitter_secret
 $ docker-compose up
@@ -53,4 +54,13 @@ $ export TWITTER_SECRET=your_twitter_secret
 $ docker run -d --name mongodb1 mongo
 $ docker run -d --name memcached1 memcached
 $ docker run --rm -p 80:3000 -e RACK_ENV=production -e MEMCACHE_SERVERS=memcached:11211 -e TWITTER_KEY -e TWITTER_SECRET --link memcached1:memcached --link mongodb1:mongodb tdiary/rpaproxy
+```
+
+## Building the docker image manually
+
+You can build the docker image manually.
+
+```
+$ git clone git@github.com:tdiary/rpaproxy-sinatra.git
+$ docker build -t tdiary/rpaproxy-sinatra .
 ```
