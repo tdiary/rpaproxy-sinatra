@@ -53,7 +53,7 @@ $ export TWITTER_KEY=your_twitter_key
 $ export TWITTER_SECRET=your_twitter_secret
 $ docker run -d --name mongodb1 mongo
 $ docker run -d --name memcached1 memcached
-$ docker run --rm -p 80:3000 -e RACK_ENV=production -e MEMCACHE_SERVERS=memcached:11211 -e TWITTER_KEY -e TWITTER_SECRET --link memcached1:memcached --link mongodb1:mongodb tdiary/rpaproxy
+$ docker run --rm -p 80:3000 -e RACK_ENV=production -e MEMCACHE_SERVERS=memcached:11211 -e TWITTER_KEY -e TWITTER_SECRET --link memcached1:memcached --link mongodb1:mongodb tdiary/rpaproxy-sinatra
 ```
 
 ## Building the docker image manually
