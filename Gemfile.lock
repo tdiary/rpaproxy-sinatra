@@ -12,7 +12,6 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.3.8)
     bson (3.1.0)
-    bson_ext (1.5.1)
     builder (3.2.2)
     coderay (1.1.0)
     connection_pool (2.2.0)
@@ -99,7 +98,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bson_ext
   dalli
   database_cleaner
   factory_girl (~> 4.0)
