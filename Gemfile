@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
 
-ruby '2.2.2'
+ruby '2.2.3'
 
 gem "rake"
 gem 'sinatra'
 gem "puma"
 
-gem "mongoid"
+gem "mongoid", "~> 4.0"
 
 gem "omniauth"
 gem "omniauth-twitter"
