@@ -25,15 +25,17 @@ GEM
     haml (4.0.7)
       tilt
     hashdiff (0.2.2)
-    hashie (3.4.2)
+    hashie (3.4.3)
     i18n (0.7.0)
     json (1.8.3)
     memcachier (0.0.2)
     method_source (0.8.2)
     minitest (5.8.1)
-    mongoid (4.0.2)
+    mongo (2.1.2)
+      bson (~> 3.0)
+    mongoid (5.0.0)
       activemodel (~> 4.0)
-      moped (~> 2.0.0)
+      mongo (~> 2.1)
       origin (~> 2.1)
       tzinfo (>= 0.3.37)
     moped (2.0.7)
@@ -104,7 +106,7 @@ DEPENDENCIES
   factory_girl (~> 4.0)
   haml
   memcachier
-  mongoid (~> 4.0)
+  mongoid (~> 5.0)
   newrelic_moped
   newrelic_rpm
   omniauth

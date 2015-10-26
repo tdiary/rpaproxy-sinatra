@@ -1,17 +1,17 @@
 production:
-  sessions:
+  clients:
     default:
       database: rpaproxy
       hosts:
         - <%= ENV['MONGODB_PORT_27017_TCP_ADDR'] %>:<%= ENV['MONGODB_PORT_27017_TCP_PORT'] %>
 development:
-  sessions:
+  clients:
     default:
       database: rpaproxy-dev
       hosts:
         - <%= ENV['MONGODB_PORT_27017_TCP_ADDR'] %>:<%= ENV['MONGODB_PORT_27017_TCP_PORT'] %>
 test:
-  sessions:
+  clients:
     default:
       database: rpaproxy-test
       hosts:

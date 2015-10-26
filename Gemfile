@@ -6,7 +6,7 @@ gem "rake"
 gem 'sinatra'
 gem "puma"
 
-gem "mongoid", "~> 4.0"
+gem "mongoid", "~> 5.0"
 
 gem "omniauth"
 gem "omniauth-twitter"
