@@ -12,7 +12,7 @@ require 'spec/factories'
 
 set :environment, :test
 
-DatabaseCleaner[:mongoid, {:connection => :test}]
+DatabaseCleaner[:mongoid]
 
 RSpec.configure do |c|
   c.include Rack::Test::Methods

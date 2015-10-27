@@ -28,6 +28,7 @@ set :haml, { format: :html5, escape_html: true }
 
 configure do
 	Mongoid.load!("config/mongoid.yml")
+	Mongo::Logger.level = Logger::FATAL
 end
 
 configure :production do

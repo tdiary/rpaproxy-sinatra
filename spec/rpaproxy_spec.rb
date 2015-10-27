@@ -58,8 +58,9 @@ describe 'rpaproxy' do
 		end
 
 		context "when has no proxy" do
-			before { 
+			before {
 				Proxy.delete_all
+				Log.delete_all
 				create(:proxy1)
 
 				get '/rpaproxy/jp/', {Service: 'AWSECommerceService', AssociateTag: 'sample-22'}
