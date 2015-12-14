@@ -3,10 +3,11 @@ $(function() {
     $(e.target).select();
   });
 
-  $(':radio[name=locale]').click(function(e) {
+  $('form#endpoint-form').change(function(e) {
     var base_url = location.href + 'rpaproxy/';
-    $('#endpoint').val(base_url + $(e.target).val() + '/');
+    var locale = $('#endpoint-form [name=locale]:checked').val();
+    $('#endpoint').val(base_url + locale + '/');
   });
 
-  $(':radio#jp').click();
+  $('#endpoint-form :radio[value=jp]').click();
 });

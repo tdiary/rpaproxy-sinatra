@@ -1,14 +1,15 @@
-%form.endpoint
-  %p
-    エンドポイント:
-    %input#endpoint.form-text{size: 120}
-  %p
-    Location:
-    -for locale in locales
-      %label{for: locale}
-        %input{id: locale, type: 'radio', name: 'locale', value: locale}
-        =locale
-  
+%form#endpoint-form
+  .form-group
+    %label.control-label{for: 'endpoint'} Endpoint:
+    %input#endpoint.form-control{type: 'text'}
+  .form-group
+    %label.control-label{for: 'locale'} Location:
+    .btn-group{'data-toggle' => 'buttons'}
+      -for locale in locales
+        %label.btn.btn-default
+          %input{type: 'radio', name: 'locale', value: locale, autocomplete: 'off'}
+          =locale
+
 %h2 なにこれ？
 
 %p
