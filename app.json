@@ -1,0 +1,27 @@
+{
+  "name": "rpaproxy-sinatra",
+  "scripts": {
+  },
+  "env": {
+    "MEMCACHE_PASSWORD": {
+      "required": true
+    },
+    "MEMCACHE_SERVERS": {
+      "required": true
+    },
+    "MEMCACHE_USERNAME": {
+      "required": true
+    },
+    "TWITTER_KEY": {
+      "required": true
+    },
+    "TWITTER_SECRET": {
+      "required": true
+    }
+  },
+  "addons": [
+    "newrelic",
+    "mongohq",
+    "memcachier"
+  ]
+}
