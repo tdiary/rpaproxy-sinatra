@@ -1,4 +1,13 @@
 $(function() {
+  function selectorEscape(val){
+    return val.replace(/[ !"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, '\\$&');
+  }
+
+  // activate current manu in the navigation bar
+  $('#navbar a[href=' + selectorEscape(location.pathname) + ']')
+    .parent()
+    .addClass("active");
+
   $('#endpoint').click(function(e) {
     $(e.target).select();
   });
@@ -10,4 +19,6 @@ $(function() {
   });
 
   $('#endpoint-form :radio[value=jp]').click();
+
+  $('#stats-locales a[href=#tabs-jp]').click();
 });

@@ -10,7 +10,8 @@
           %input{type: 'radio', name: 'locale', value: locale, autocomplete: 'off'}
           =locale
 
-%h2 なにこれ？
+.page-header
+  %h2 なにこれ？
 
 %p
   %a{href: 'http://aws.amazon.com/'} Amazon Web Services
@@ -19,8 +20,8 @@
   用の認証処理を代行するプロキシ(
   %a{href: 'http://sho.tdiary.net/20090706.html#p01'} amazon-auth-proxy仕様準拠
   )の負荷分散を行うリバース・プロキシです。
-%p 上記のエンドポイント宛にProduct Advertising API（旧：Amazon アソシエイト Web サービス）のRESTエンドポイント用クエリを付けて送信すると、登録されているプロキシの中からラウンドロビンに選択して要求を中継し、応答を返します。
 %p
+  上記のエンドポイント宛にProduct Advertising API（旧：Amazon アソシエイト Web サービス）のRESTエンドポイント用クエリを付けて送信すると、登録されているプロキシの中からラウンドロビンに選択して要求を中継し、応答を返します。
   オリジナルは、
   %a{href: 'http://d.hatena.ne.jp/furyu-tei/'} id:furyu-tei
   さんの
@@ -28,30 +29,42 @@
   です。
 
 %h3 リクエスト例
+
 %pre http://rpaproxy.tdiary.org/rpaproxy/jp/?Service=AWSECommerceService&AssociateTag=sample-22&SubscriptionId=12345678901234567890&Version=2007-10-29&Operation=ItemSearch&ResponseGroup=Small&SearchIndex=Books&Keywords=Amazon&ItemPage=1
 
 %p これにより、従来のクラインアントアプリケーションもエンドポイントを書換えてやるだけで、署名認証処理を意識することなく動作可能となります。
 
-%h2 注意事項
+.page-header
+  %h2 注意事項
 
-%h3 利用者の方へ
-%ul
-  %li 過度に頻繁なアクセスが確認された場合など、運用者の判断で予告無く利用を制限するなどの措置をとる可能性があります。
-  %li また、運用者の都合により、予告無くサービスを停止することもありますので、ご了承願います。
-  %li AmazonのAccess Key IDをお持ちの方は、自前でプロキシを設置の上、本リバース・プロキシへの登録をお願いします。
-
-%h3 プロキシ提供者の方へ
-%ul
-  %li 負荷の関係上、Amazon APIコール結果ではなく、認証Signature付きURLを302 Foundで返すようにお願いします。
-  %li リバース・プロキシからのHTTPリクエストヘッダのUser-Agentには、"rpaproxy/x.xx"(x.xxはバージョン)が含まれます。
+.row
+  .col-sm-6
+    .panel.panel-warning
+      .panel-heading
+        %h3.panel-title 利用者の方へ
+      .panel-body
+        %ul
+          %li 過度に頻繁なアクセスが確認された場合など、運用者の判断で予告無く利用を制限するなどの措置をとる可能性があります。
+          %li また、運用者の都合により、予告無くサービスを停止することもありますので、ご了承願います。
+          %li AmazonのAccess Key IDをお持ちの方は、自前でプロキシを設置の上、本リバース・プロキシへの登録をお願いします。
+  .col-sm-6
+    .panel.panel-warning
+      .panel-heading
+        %h3.panel-title プロキシ提供者の方へ
+      .panel-body
+        %ul
+          %li 負荷の関係上、Amazon APIコール結果ではなく、認証Signature付きURLを302 Foundで返すようにお願いします。
+          %li リバース・プロキシからのHTTPリクエストヘッダのUser-Agentには、"rpaproxy/x.xx"(x.xxはバージョン)が含まれます。
 
 -unless current_user
-  %h2 プロキシ登録
+  .page-header
+    %h2 プロキシ登録
 
   %p プロキシ登録にはTwitterによるログインが必要です
   %a{href: '/auth/twitter'}
     %img{src: 'sign-in-with-twitter-l.png', alt: 'Twitterでログイン'}
 
-%h2 登録プロキシ一覧
+.page-header
+  %h2 登録プロキシ一覧
 
 %a{href: '/proxies'} 登録プロキシ一覧

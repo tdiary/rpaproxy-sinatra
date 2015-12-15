@@ -1,10 +1,11 @@
 !!! 5
 %html
   %head
-    %title Product Advertising API用リバースプロキシ
+    %title Product Advertising API リバースプロキシ
     %meta{charset: "utf-8"}
     %meta{name: "viewport", content: "width=device-width, initial-scale=1"}
     %link{rel: "stylesheet", href: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"}
+    -# %link{rel: "stylesheet", href: "css/bootstrap.min.css"}
     %link{rel: "stylesheet", href: "css/rpaproxy.css"}
   %body
     %nav.navbar.navbar-default.navbar-fixed-top
@@ -15,11 +16,11 @@
             %span.icon-bar
             %span.icon-bar
             %span.icon-bar
+            -# %span.glyphicon.glyphicon-menu-hamburger
           %a.navbar-brand{href: "/"} rpaproxy
         #navbar.collapse.navbar-collapse
           %ul.nav.navbar-nav
-            // TODO 表示しているページをactiveにする
-            %li.active
+            %li
               %a{href: '/'} Top
             %li
               %a{href: '/proxies'} プロキシ一覧
@@ -46,14 +47,15 @@
 
     .container
       .page-header
-        %h1 Product Advertising API用リバースプロキシ
+        %h1 Product Advertising API リバースプロキシ
       != yield
 
-    .container
+    .container-fluid
       #footer
         Presented by
         %a{href: 'http://twitter.com/machu'} @machu
 
     %script{src: "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"}
     %script{src: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"}
+    -# %script{src: "/js/bootstrap.min.js"}
     %script{src: '/js/rpaproxy.js'}
