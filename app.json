@@ -21,7 +21,7 @@
   },
   "addons": [
     "newrelic",
-    "mongohq",
+    "MongoLab",
     "memcachier"
   ]
 }
