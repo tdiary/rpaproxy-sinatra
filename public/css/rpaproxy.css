@@ -1,3 +1,11 @@
 body {
   padding-top: 50px;
 }
+
+div#footer {
+  border-top: solid 1px #cccccc;
+  margin-top: 5em;
+  padding: 1em;
+  background: #efefef;
+  text-align: right;
+}
