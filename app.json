@@ -3,15 +3,6 @@
   "scripts": {
   },
   "env": {
-    "MEMCACHE_PASSWORD": {
-      "required": true
-    },
-    "MEMCACHE_SERVERS": {
-      "required": true
-    },
-    "MEMCACHE_USERNAME": {
-      "required": true
-    },
     "TWITTER_KEY": {
       "required": true
     },
