@@ -1,30 +1,14 @@
-%script{src: '/js/jquery-ui-1.8.16.custom.min.js'}
-%script{language: 'javascript'}
-  $(function() { $('#tabs').tabs({event: "mouseover"}); });
-
 %h2 アクセス統計
 
-%h3 総アクセス数
-
-%table{cellpadding: '0', cellspacing: '0'}
-  %tbody
-    %tr
-      -for stat in @stats
-        %th= stat.locale
-    %tr
-      -for stat in @stats
-        %td= stat.count
-
-%h3 アクセス元
-
-#tabs
-  %ul
-    -for stat in @stats
-      %li
-        %a{href: "#tabs-#{stat.locale}"}= stat.locale
+%ul#stats-locales.nav.nav-tabs
   -for stat in @stats
-    %div{id: "tabs-#{stat.locale}"}
-      %table{cellpadding: '0', cellspacing: '0'}
+    %li
+      %a{:href => "#tabs-#{stat.locale}", 'data-toggle' => "tab"}
+        =stat.locale
+.tab-content
+  -for stat in @stats
+    .tab-pane{id: "tabs-#{stat.locale}"}
+      %table.table
         %tbody
           %tr
             %th Associate Tag
@@ -35,4 +19,3 @@
               %td= atag_report.atag
               %td.number= atag_report.count
               %td.number= "#{(atag_report.ratio * 100).to_i}%"
-

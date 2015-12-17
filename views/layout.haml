@@ -1,43 +1,61 @@
 !!! 5
 %html
   %head
-    %title Product Advertising API用リバースプロキシ
-    %meta{:"http-equiv"=>"Content-Type", :content=>"text/html", :charset=>"utf-8"}
-    %link{"rel" => "stylesheet", "href" => "/css/rpaproxy.css", "type" => "text/css", "media" => "all"}
-    %link{"rel" => "stylesheet", "href" => "/css/smoothness/jquery-ui-1.8.16.custom.css", "type" => "text/css", "media" => "all"}
-    %script{src: 'http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'}
-    %script{src: '/js/rpaproxy.js'}
+    %title Product Advertising API リバースプロキシ
+    %meta{charset: "utf-8"}
+    %meta{name: "viewport", content: "width=device-width, initial-scale=1"}
+    %link{rel: "stylesheet", href: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"}
+    -# %link{rel: "stylesheet", href: "css/bootstrap.min.css"}
+    %link{rel: "stylesheet", href: "css/rpaproxy.css"}
   %body
-    #header-outer
-      %a{href: 'https://github.com/tdiary/rpaproxy-sinatra'}
-        %img{style: 'position: absolute; top: 0; left: 0; border: 0;', src: "https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png", alt: "Fork me on GitHub"}
-      #header
-        -if current_user
-          = "welcome #{current_user.name}"
+    %nav.navbar.navbar-default.navbar-fixed-top
+      .container
+        .navbar-header
+          %button.navbar-toggle.collapsed{:type => "button", "data-toggle" => "collapse", "data-target" => "#navbar", "aria-expanded" => "false", "aria-controls" => "navbar"}
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+            -# %span.glyphicon.glyphicon-menu-hamburger
+          %a.navbar-brand{href: "/"} rpaproxy
+        #navbar.collapse.navbar-collapse
+          %ul.nav.navbar-nav
+            %li
+              %a{href: '/'} Top
+            %li
+              %a{href: '/proxies'} プロキシ一覧
+            // TODO Twitterの顔アイコンを表示
+            -if current_user
+              %li
+                %a{href: '/users'} 提供者
+              %li
+                %a{href: '/logs'} ログ
+              %li
+                %a{href: '/stats'} 利用状況
+          %ul.nav.navbar-nav.navbar-right
+            -if current_user
+              %li
+                %a{href: '/profile'} 設定
+              %li
+                %a{href: '/logout'} ログアウト
+            -else
+              %li
+                %a{href: '/auth/twitter'} ログイン
+              -unless settings.environment == :production
+                %li
+                  %a{href: '/auth/developer'} ログイン(開発用)
 
-        %a{href: '/'} トップページ
-        %a{href: '/proxies'} プロキシ一覧
-
-        -if current_user
-          %a{href: '/users'} 提供者一覧
-          %a{href: '/logs'} ログ
-          %a{href: '/stats'} 利用状況
-          %a{href: '/profile'} 設定
-          %a{href: '/logout'} ログアウト
-        -else
-          %a{href: '/auth/twitter'}
-            %img{src: 'sign-in-with-twitter-l.png', alt: 'Twitterでログイン'}
-          -unless settings.environment == :production
-            %a{href: '/auth/developer'} ログイン(開発用)
-
-    #content-outer
-
-      %h1
-        Product Advertising API用リバースプロキシ
-
+    .container
+      .page-header
+        %h1 Product Advertising API リバースプロキシ
       != yield
 
-    #footer-outer
+    .container-fluid
       #footer
         Presented by
         %a{href: 'http://twitter.com/machu'} @machu
+
+    %script{src: "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"}
+    %script{src: "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"}
+    -# %script{src: "/js/bootstrap.min.js"}
+    %script{src: '/js/rpaproxy.js'}
