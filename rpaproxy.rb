@@ -13,6 +13,7 @@ require './models/stat.rb'
 require './models/client.rb'
 
 if production?
+	require 'memcachier'
 	require 'rack/session/dalli'
 	use Rack::Session::Dalli, cache: Dalli::Client.new, expire_after: 2592000
 else

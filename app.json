@@ -3,6 +3,10 @@
   "scripts": {
   },
   "env": {
+    "RACK_ENV": {
+      "value": "production",
+      "required": true
+    },
     "TWITTER_KEY": {
       "required": true
     },
