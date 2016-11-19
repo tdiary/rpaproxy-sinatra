@@ -1,4 +1,4 @@
-FROM ruby:2.3.1-alpine
+FROM ruby:2.3.2-alpine
 
 RUN apk add --no-cache --update alpine-sdk
 RUN mkdir -p /usr/src/app
