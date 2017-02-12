@@ -1,13 +1,13 @@
 FROM ruby:2.3.3-alpine
 
-RUN apk add --no-cache --update alpine-sdk
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 COPY Gemfile /usr/src/app/
 COPY Gemfile.lock /usr/src/app/
-RUN bundle install && apk del alpine-sdk
-
+RUN apk add --no-cache --update alpine-sdk && \
+    bundle install && \
+    apk del alpine-sdk
 COPY . /usr/src/app
 COPY config/mongoid-docker.yml config/mongoid.yml
 EXPOSE 3000
