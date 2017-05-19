@@ -1,5 +1,5 @@
 language: ruby
 services: mongodb
 
-rvm: 2.3.3
+rvm: 2.4.1
 script: bundle exec rake spec

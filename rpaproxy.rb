@@ -173,7 +173,7 @@ delete '/proxy/:id' do
 end
 
 # リバースプロキシ http://rpaproxy.heroku.com/rpaproxy/jp/
-get %r{\A/rpaproxy/([\w]{2})/\Z} do |locale|
+get %r{/rpaproxy/([\w]{2})/} do |locale|
 	# deny bot
 	if forbidden?
 		env['QUERY_STRING'] = request.params.reject{|k,v| k == 'AssociateTag' }.to_query
