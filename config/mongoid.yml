@@ -1,7 +1,7 @@
 production:
   clients:
     default:
-      uri: <%= ENV['MONGOHQ_URL'] || ENV['MONGOLAB_URI'] %>
+      uri: <%= ENV['MONGOHQ_URL'] || ENV['MONGODB_URI'] %>
 development:
   # Configure available database clients. (required)
   clients:
