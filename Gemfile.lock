@@ -1,17 +1,17 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (4.2.8)
-      activesupport (= 4.2.8)
+    activemodel (4.2.9)
+      activesupport (= 4.2.9)
       builder (~> 3.1)
-    activesupport (4.2.8)
+    activesupport (4.2.9)
       i18n (~> 0.7)
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.5.1)
       public_suffix (~> 2.0, >= 2.0.2)
-    bson (4.2.1)
+    bson (4.2.2)
     builder (3.2.3)
     coderay (1.1.1)
     crack (0.4.3)
@@ -25,12 +25,12 @@ GEM
       temple (>= 0.8.0)
       tilt
     hashdiff (0.3.4)
-    hashie (3.5.5)
-    i18n (0.8.1)
+    hashie (3.5.6)
+    i18n (0.8.6)
     memcachier (0.0.2)
     method_source (0.8.2)
-    minitest (5.10.2)
-    mongo (2.4.1)
+    minitest (5.10.3)
+    mongo (2.4.2)
       bson (>= 4.2.1, < 5.0.0)
     mongoid (5.2.1)
       activemodel (~> 4.0)
@@ -43,7 +43,7 @@ GEM
       moped
       newrelic_rpm (~> 3.11)
     newrelic_rpm (3.18.1.330)
-    oauth (0.5.2)
+    oauth (0.5.3)
     omniauth (1.6.1)
       hashie (>= 3.4.6, < 3.6.0)
       rack (>= 1.6.2, < 3)
@@ -53,7 +53,7 @@ GEM
     omniauth-twitter (1.4.0)
       omniauth-oauth (~> 1.1)
       rack
-    origin (2.3.0)
+    origin (2.3.1)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -63,8 +63,8 @@ GEM
     rack (2.0.3)
     rack-protection (2.0.0)
       rack
-    rack-test (0.6.3)
-      rack (>= 1.0)
+    rack-test (0.7.0)
+      rack (>= 1.0, < 3)
     rake (12.0.0)
     rspec (3.6.0)
       rspec-core (~> 3.6.0)
@@ -122,4 +122,4 @@ RUBY VERSION
    ruby 2.4.1p111
 
 BUNDLED WITH
-   1.15.1
+   1.15.3
