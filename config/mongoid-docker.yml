@@ -3,19 +3,19 @@ production:
     default:
       database: rpaproxy
       hosts:
-        - <%= ENV['MONGODB_PORT_27017_TCP_ADDR'] %>:<%= ENV['MONGODB_PORT_27017_TCP_PORT'] %>
+        - mongodb:27017
 development:
   clients:
     default:
       database: rpaproxy-dev
       hosts:
-        - <%= ENV['MONGODB_PORT_27017_TCP_ADDR'] %>:<%= ENV['MONGODB_PORT_27017_TCP_PORT'] %>
+        - mongodb:27017
 test:
   clients:
     default:
       database: rpaproxy-test
       hosts:
-        - <%= ENV['MONGODB_PORT_27017_TCP_ADDR'] %>:<%= ENV['MONGODB_PORT_27017_TCP_PORT'] %>
+        - mongodb:27017
       options:
         read: primary
         # In the test environment we lower the retries and retry interval to
