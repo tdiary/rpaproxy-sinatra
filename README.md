@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.org/tdiary/rpaproxy-sinatra.svg?branch=master)](https://travis-ci.org/tdiary/rpaproxy-sinatra)
 [![Code Climate](https://codeclimate.com/github/tdiary/rpaproxy-sinatra.png)](https://codeclimate.com/github/tdiary/rpaproxy-sinatra)
-[![Dependency Status](https://gemnasium.com/tdiary/rpaproxy-sinatra.png)](https://gemnasium.com/tdiary/rpaproxy-sinatra)
 
 ## What is it?
 
